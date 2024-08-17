@@ -1,11 +1,15 @@
 import React from "react";
 
-function Button() {
+interface ButtonProps {
+  label: string;
+}
+
+function Button({ label }: ButtonProps) {
   const handleClick = () => {
     alert("Button clicked!");
   };
 
-  return <button onClick={handleClick}>Click me</button>;
+  return <button onClick={handleClick}>{label}</button>;
 }
 
 export default Button;

@@ -1,17 +1,18 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
-import Button from "./components/shared/Button";
+import "./pages/login/Login";
+import Login from "./pages/login/Login";
+import "./index.css";
 
 function App() {
   const [count, setCount] = useState(0);
 
   return (
     <>
-      <div className="App">
-        <h1>Hello, Vite + React + TypeScript!</h1>
-        <Button />
+      <div className="flex w-full h-screen">
+        <div className="w-full items-center justify-center flex">
+          <Login />
+        </div>
       </div>
     </>
   );
