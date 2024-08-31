@@ -1,20 +1,15 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import "./pages/login/Login";
-import Login from "./pages/login/Login";
 import "./index.css";
+import { RouterProvider } from "react-router-dom";
+import router from "./configuration/Routing";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div className="flex w-full h-screen">
-        <div className="w-full items-center justify-center flex">
-          <Login />
-        </div>
-      </div>
-    </>
+    <React.StrictMode>
+      <RouterProvider router={router} />
+    </React.StrictMode>
   );
 }
 
