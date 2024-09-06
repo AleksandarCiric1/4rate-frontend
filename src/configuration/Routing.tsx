@@ -1,20 +1,19 @@
+import { LoginForm } from "@/pages/auth/login/login";
+import { RegisterForm } from "@/pages/auth/register/register";
+import { PracticeForm } from "@/practice/practice-form";
 import { createBrowserRouter } from "react-router-dom";
-import Login from "../pages/login/Login";
-import Register from "../pages/register/Register";
-import { SimpleForm } from "../pages/SimpleForm";
-
 const router = createBrowserRouter([
   {
+    path: "practice",
+    element: <PracticeForm />,
+  },
+  {
     path: "login",
-    element: <Login />,
+    element: <LoginForm />,
   },
   {
     path: "register",
-    element: <Register />,
-  },
-  {
-    path: "simple-form",
-    element: <SimpleForm />,
+    element: <RegisterForm />,
   },
 ]);
 

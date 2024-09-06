@@ -1,16 +1,9 @@
-import React, { useState } from "react";
-import "./App.css";
-import "./pages/login/Login";
-import "./index.css";
 import { RouterProvider } from "react-router-dom";
+import "./index.css";
 import router from "./configuration/Routing";
 
 function App() {
-  return (
-    <React.StrictMode>
-      <RouterProvider router={router} />
-    </React.StrictMode>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
