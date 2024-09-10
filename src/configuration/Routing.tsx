@@ -1,8 +1,22 @@
+import Admin from "@/pages/admin/admin";
 import { LoginForm } from "@/pages/auth/login/login";
 import { RegisterForm } from "@/pages/auth/register/register";
+import { NotFoundPage } from "@/pages/errors/not-found";
+import { DefaultLayout } from "@/pages/layouts/default-layout";
 import { PracticeForm } from "@/practice/practice-form";
 import { createBrowserRouter } from "react-router-dom";
 const router = createBrowserRouter([
+  {
+    path: "/",
+    errorElement: <NotFoundPage />,
+    element: <DefaultLayout />,
+    children: [
+      {
+        path: "admin",
+        element: <Admin />,
+      },
+    ],
+  },
   {
     path: "practice",
     element: <PracticeForm />,

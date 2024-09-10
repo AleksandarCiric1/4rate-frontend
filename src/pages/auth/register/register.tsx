@@ -16,7 +16,7 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   RegisterDefaultValues,
   RegisterSchema,
@@ -34,6 +34,10 @@ export const RegisterForm = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    document.title = "4Rate: Register";
+  }, []);
+
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: RegisterDefaultValues,
@@ -47,7 +51,7 @@ export const RegisterForm = () => {
     setIsLoading(true);
 
     axios
-      .post("http://localhost:8080/v1/auth/login")
+      .post("http://localhost:8080/v1/userAccounts/createAccount", values)
       .then((response) => {
         console.log(response);
         setTimeout(() => {
@@ -152,7 +156,7 @@ export const RegisterForm = () => {
               />
               <FormField
                 control={form.control}
-                name="confirmpassword"
+                name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Confrim password</FormLabel>

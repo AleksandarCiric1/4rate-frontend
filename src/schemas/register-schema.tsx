@@ -11,7 +11,7 @@ const RegisterSchema = z
         /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/,
         "Password must contain at least one letter, number and special character"
       ),
-    confirmpassword: z
+    confirmPassword: z
       .string()
       .min(8, "Password must be at least 8 characters long")
       .regex(
@@ -23,16 +23,16 @@ const RegisterSchema = z
       required_error: "Please select a role",
     }),
   })
-  .refine((data) => data.password === data.confirmpassword, {
+  .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords must match",
-    path: ["confirmpassword"],
+    path: ["confirmPassword"],
   });
 
 const RegisterDefaultValues = {
   username: "",
   email: "",
   password: "",
-  confirmpassword: "",
+  confirmPassword: "",
   role: undefined,
 };
 

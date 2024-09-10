@@ -15,7 +15,7 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoginDefaultValues, LoginSchema } from "@/schemas/login-schema";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import AuthLayout from "../components/auth-layout";
@@ -23,6 +23,10 @@ import AuthLayout from "../components/auth-layout";
 export const LoginForm = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    document.title = "4Rate: Login";
+  }, []);
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -34,7 +38,7 @@ export const LoginForm = () => {
     setIsLoading(true);
 
     axios
-      .post("http://localhost:8080/v1/auth/login")
+      .post("http://localhost:8080/v1/userAccounts/login", values)
       .then((response) => {
         console.log(response);
         setTimeout(() => {
