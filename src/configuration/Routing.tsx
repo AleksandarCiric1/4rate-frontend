@@ -1,4 +1,5 @@
 import Admin from "@/pages/admin/admin";
+import DemoPage from "@/pages/admin/components/payments/page";
 import { LoginForm } from "@/pages/auth/login/login";
 import { RegisterForm } from "@/pages/auth/register/register";
 import { NotFoundPage } from "@/pages/errors/not-found";
@@ -14,6 +15,13 @@ const router = createBrowserRouter([
       {
         path: "admin",
         element: <Admin />,
+        children: [
+          {
+            path: "",
+            element: "",
+          },
+          { path: "users", element: <DemoPage /> },
+        ],
       },
     ],
   },

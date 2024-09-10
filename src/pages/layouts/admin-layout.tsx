@@ -5,6 +5,7 @@ import { Folder, MessageCircle, Newspaper } from "lucide-react";
 import AnalyticsChart from "../admin/components/dashboard/analytics-chart";
 import BackButton from "../admin/components/back-button";
 import { ThemeProvider } from "@/components/shared/theme-provider";
+import { Outlet } from "react-router-dom";
 
 const AdminLayout = () => {
   return (
@@ -17,9 +18,9 @@ const AdminLayout = () => {
           </div>
           <div className="p-5 w-full md:max-w-[1140px]">
             <div className="flex flex-row">
-              <BackButton text="Go back" link="/" />
+              <BackButton text="Go back" link="/admin" />
             </div>
-            <div className="flex flex-col md:flex-row justify-between gap-5 mb-5">
+            {/* <div className="flex flex-col md:flex-row justify-between gap-5 mb-5">
               <DashboardCard
                 title="Posts"
                 count={100}
@@ -41,7 +42,8 @@ const AdminLayout = () => {
                 icon={<MessageCircle className="text-slate-500" size={72} />}
               />
             </div>
-            <AnalyticsChart />
+            <AnalyticsChart /> */}
+            <Outlet />
           </div>
         </div>
       </ThemeProvider>

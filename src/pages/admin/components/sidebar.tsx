@@ -14,6 +14,8 @@ import {
   Folders,
   Settings,
   User,
+  Utensils,
+  StickyNote,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -30,11 +32,21 @@ function Sidebar() {
           </CommandItem>
           <CommandItem>
             <Newspaper className="mr-2 h-4 w-4" />
-            <Link to="">Posts</Link>
+            <Link to="users">Users</Link>
           </CommandItem>
           <CommandItem>
             <Folders className="mr-2 h-4 w-4" />
             <Link to="">Categories</Link>
+          </CommandItem>
+        </CommandGroup>
+        <CommandGroup heading="Restaurant">
+          <CommandItem>
+            <Utensils className="mr-2 h-4 w-4" />
+            <span>Restaurant</span>
+          </CommandItem>
+          <CommandItem>
+            <StickyNote className="mr-2 h-4 w-4" />
+            <span>Resturant requests</span>
           </CommandItem>
         </CommandGroup>
         <CommandSeparator />
