@@ -6,13 +6,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
-  DialogClose,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { z as zod } from "zod";
 import { Category } from "./columns";
 import axios from "axios";
@@ -50,7 +46,7 @@ const CategoryCreateDialog = (props: CategoryCreateDialogProps) => {
     formData: Zod.infer<typeof DialogCategoryFormSchema>
   ) => {
     axios
-      .post("http://localhost:8080/v1/category/add", formData)
+      .post("http://localhost:8080/v1/categories/add", formData)
       .then((response) => {
         props.onCreate(response.data);
       })
@@ -103,7 +99,7 @@ const CategoryEditDialog = (props: CateogryEditDialogProps) => {
   ) => {
     props.category.name = formData.name;
     axios
-      .put("http://localhost:8080/v1/category/edit", props.category)
+      .put("http://localhost:8080/v1/categories/edit", props.category)
       .then((response) => {
         props.onEdit({ ...formData, categoryId: props.category.id });
       })

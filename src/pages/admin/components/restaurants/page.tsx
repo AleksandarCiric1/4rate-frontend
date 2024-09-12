@@ -1,26 +1,29 @@
 import { useEffect, useState } from "react";
-import { Category, columns } from "./columns";
 import { DataTable } from "./data-table";
 import axios from "axios";
-import { CategoryEditFormData } from "@/types/category";
+import { columns, Restaurant } from "./columns";
+import { RestaurantBlockFormData } from "@/types/restaurant";
+import { RestaurantBlockDialog } from "./restaurant-dialogs";
 
 export default function RestaurantsTable() {
-  const [isEditDialogOpen, setEditDialogOpen] = useState<boolean>(false);
-  const [isCreateDialogOpen, setCreateDialogOpen] = useState<boolean>(false);
-  const [categoryToEdit, setCategoryToEdit] = useState<Category | null>(null);
-  const [data, setData] = useState<Category[] | null>(null);
+  const [isBlockDialogOpen, setBlockDialogOpen] = useState<boolean>(false);
+  const [restaurantToBlock, setRestaurantToBlock] = useState<Restaurant | null>(
+    null
+  );
+  const [data, setData] = useState<Restaurant[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<Category[]>(
-          "http://localhost:8080/v1/category/getAll"
+        const response = await axios.get<Restaurant[]>(
+          "http://localhost:8080/v1/restaurants/getAll"
         );
         setData(response.data);
-      } catch (err) {
-        setError("Failed to load data");
+      } catch (err: any) {
+        if (err.response) setError(err.response.data);
+        else setError("Faild to load data...");
       } finally {
         setLoading(false);
       }
@@ -29,56 +32,30 @@ export default function RestaurantsTable() {
     fetchData();
   }, []);
 
-  const handleActions = (id: number, action: string) => {
-    let apiPath = `http://localhost:8080/v1/category/${action}/${id}`;
+  const handleColumnsBlock = (restaurant: Restaurant) => {
+    setRestaurantToBlock(restaurant);
+    setBlockDialogOpen(true);
+  };
+
+  const handleRestaurantBlock = (formData: RestaurantBlockFormData) => {
+    let obj = { description: formData.description, id: formData.restaurantId };
     axios
-      .put(apiPath)
-      .then((response) => {
-        console.log(response);
+      .put("http://localhost:8080/v1/restaurants/block", obj)
+      .then(() => {
         setData(
           (prevData) =>
-            prevData?.map((category) => {
-              if (category.id === id) {
-                if (action === "activate") {
-                  return { ...category, status: true };
-                } else if (action === "block") {
-                  return { ...category, status: false };
-                }
+            prevData?.map((restaurant) => {
+              if (restaurant.id === formData.restaurantId) {
+                restaurant.status = "blocked";
               }
-              return category;
+              return restaurant;
             }) || null
         );
+        setBlockDialogOpen(false);
       })
       .catch((error) => {
-        console.error(error);
+        console.log(error);
       });
-  };
-
-  const handleAddCategory = (newCategory: Category) => {
-    setData((prevData) =>
-      prevData ? [...prevData, newCategory] : [newCategory]
-    );
-    setCreateDialogOpen(false);
-  };
-
-  const handleEditCategory = (category: Category) => {
-    setCategoryToEdit(category);
-    console.log(categoryToEdit);
-    setEditDialogOpen(true);
-  };
-
-  const handleEdit = (formData: CategoryEditFormData) => {
-    if (categoryToEdit) {
-      categoryToEdit.name = formData.name;
-      setData(
-        (prevData) =>
-          prevData?.map((category) => {
-            if (category.id === categoryToEdit.id) return categoryToEdit;
-            return category;
-          }) || null
-      );
-    }
-    setEditDialogOpen(false);
   };
 
   if (loading) return <p>Loading...</p>;
@@ -91,13 +68,17 @@ export default function RestaurantsTable() {
       </div>
       <div className="container mx-auto py-6">
         <DataTable
-          columns={columns({
-            onAction: handleActions,
-            onEdit: handleEditCategory,
-          })}
+          columns={columns({ onBlock: handleColumnsBlock })}
           data={data}
         >
-          <div></div>
+          {restaurantToBlock && (
+            <RestaurantBlockDialog
+              onEdit={handleRestaurantBlock}
+              restaurant={restaurantToBlock}
+              isOpen={isBlockDialogOpen}
+              onOpenChange={setBlockDialogOpen}
+            ></RestaurantBlockDialog>
+          )}
         </DataTable>
       </div>
     </div>

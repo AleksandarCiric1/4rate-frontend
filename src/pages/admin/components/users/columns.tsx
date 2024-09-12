@@ -48,6 +48,17 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
     header: "Last name",
   },
   {
+    accessorKey: "role",
+    header: "Role",
+    cell: ({ row }) => {
+      const roleValue = row.getValue("role");
+      if (roleValue === "guest") return <Badge variant="blue">guest</Badge>;
+      else if (roleValue === "manager")
+        return <Badge variant="success">manager</Badge>;
+      else return <Badge variant="warning">administrator</Badge>;
+    },
+  },
+  {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
@@ -56,7 +67,7 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
         return <Badge variant="success">active</Badge>;
       else if (statusValue === "suspended")
         return <Badge variant="warning">suspended</Badge>;
-      else if (statusValue === "blocked")
+      else if (statusValue === "block")
         return <Badge variant="destructive">blcoked</Badge>;
     },
   },
@@ -118,30 +129,37 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
                   Confirm
                 </DropdownMenuItem>
               )}
-              {row.getValue("status") !== "active" && (
-                <DropdownMenuItem
-                  onClick={() =>
-                    props.onAction(id, "/admin/unsuspend", "activate")
-                  }
-                >
-                  Activate
-                </DropdownMenuItem>
-              )}
-              {row.getValue("status") !== "suspended" && (
-                <DropdownMenuItem
-                  onClick={() =>
-                    props.onAction(id, "/admin/suspend", "suspend")
-                  }
-                >
-                  Suspend
-                </DropdownMenuItem>
-              )}
-              {row.getValue("status") !== "blocked" && (
-                <DropdownMenuItem
-                  onClick={() => props.onAction(id, "/admin/block", "block")}
-                >
-                  Block
-                </DropdownMenuItem>
+              {row.getValue("status") !== "block" && (
+                <>
+                  {row.getValue("status") !== "active" && (
+                    <DropdownMenuItem
+                      onClick={() =>
+                        props.onAction(id, "/admin/unsuspend", "activate")
+                      }
+                    >
+                      Activate
+                    </DropdownMenuItem>
+                  )}
+
+                  {row.getValue("status") !== "suspended" && (
+                    <DropdownMenuItem
+                      onClick={() =>
+                        props.onAction(id, "/admin/suspend", "suspend")
+                      }
+                    >
+                      Suspend
+                    </DropdownMenuItem>
+                  )}
+                  {row.getValue("status") !== "block" && (
+                    <DropdownMenuItem
+                      onClick={() =>
+                        props.onAction(id, "/admin/block", "block")
+                      }
+                    >
+                      Block
+                    </DropdownMenuItem>
+                  )}
+                </>
               )}
             </DropdownMenuContent>
           </DropdownMenu>

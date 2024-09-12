@@ -17,7 +17,7 @@ export default function CategoriesTable() {
     const fetchData = async () => {
       try {
         const response = await axios.get<Category[]>(
-          "http://localhost:8080/v1/category/getAll"
+          "http://localhost:8080/v1/categories/getAll"
         );
         setData(response.data);
       } catch (err) {
@@ -31,7 +31,7 @@ export default function CategoriesTable() {
   }, []);
 
   const handleActions = (id: number, action: string) => {
-    let apiPath = `http://localhost:8080/v1/category/${action}/${id}`;
+    let apiPath = `http://localhost:8080/v1/categories/${action}/${id}`;
     axios
       .put(apiPath)
       .then((response) => {

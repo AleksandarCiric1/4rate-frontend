@@ -46,7 +46,7 @@ function Sidebar() {
           </CommandItem>
           <CommandItem>
             <StickyNote className="mr-2 h-4 w-4" />
-            <span>Resturant requests</span>
+            <Link to="resturant-requests">Resturant requests</Link>
           </CommandItem>
         </CommandGroup>
         <CommandSeparator />

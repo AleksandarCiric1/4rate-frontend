@@ -40,7 +40,7 @@ export default function UsersTable() {
                   return { ...user, status: "active" };
                 else if (action === "suspend")
                   return { ...user, status: "suspended" };
-                else return { ...user, status: "blocked" };
+                else return { ...user, status: "block" };
               }
               return user;
             }) || null
