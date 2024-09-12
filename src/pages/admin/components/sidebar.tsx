@@ -21,11 +21,11 @@ import { Link } from "react-router-dom";
 
 function Sidebar() {
   return (
-    <Command className="bg-slate-200 rounded-none dark:bg-slate-700">
+    <Command className="bg-slate-200 rounded-none dark:bg-slate-700 border dark:border-y-white">
       {/* <CommandInput placeholder="Type a command or search..." /> */}
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="Suggestions">
+        <CommandGroup heading="General">
           <CommandItem>
             <LayoutDashboard className="mr-2 h-4 w-4" />
             <Link to="">Dashboard</Link>
@@ -36,13 +36,13 @@ function Sidebar() {
           </CommandItem>
           <CommandItem>
             <Folders className="mr-2 h-4 w-4" />
-            <Link to="">Categories</Link>
+            <Link to="categories">Categories</Link>
           </CommandItem>
         </CommandGroup>
         <CommandGroup heading="Restaurant">
           <CommandItem>
             <Utensils className="mr-2 h-4 w-4" />
-            <span>Restaurant</span>
+            <Link to="restaurants">Restaurants</Link>
           </CommandItem>
           <CommandItem>
             <StickyNote className="mr-2 h-4 w-4" />

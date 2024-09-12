@@ -1,5 +1,7 @@
 import Admin from "@/pages/admin/admin";
-import DemoPage from "@/pages/admin/components/payments/page";
+import CategoriesTable from "@/pages/admin/components/categories/page";
+import RestaurantsTable from "@/pages/admin/components/restaurants/page";
+import UsersTable from "@/pages/admin/components/users/page";
 import { LoginForm } from "@/pages/auth/login/login";
 import { RegisterForm } from "@/pages/auth/register/register";
 import { NotFoundPage } from "@/pages/errors/not-found";
@@ -20,7 +22,9 @@ const router = createBrowserRouter([
             path: "",
             element: "",
           },
-          { path: "users", element: <DemoPage /> },
+          { path: "users", element: <UsersTable /> },
+          { path: "categories", element: <CategoriesTable /> },
+          { path: "restaurants", element: <RestaurantsTable /> },
         ],
       },
     ],
