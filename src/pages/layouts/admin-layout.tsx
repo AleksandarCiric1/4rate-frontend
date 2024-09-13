@@ -6,6 +6,7 @@ import AnalyticsChart from "../admin/components/dashboard/analytics-chart";
 import BackButton from "../admin/components/back-button";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { Outlet } from "react-router-dom";
+import { Toaster } from "@/components/ui/toaster";
 
 const AdminLayout = () => {
   return (
@@ -46,6 +47,7 @@ const AdminLayout = () => {
             <Outlet />
           </div>
         </div>
+        <Toaster />
       </ThemeProvider>
     </div>
   );

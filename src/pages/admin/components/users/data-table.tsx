@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/pagination";
 import { ReactNode, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { User } from "./columns";
+import { User } from "@/types/user";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

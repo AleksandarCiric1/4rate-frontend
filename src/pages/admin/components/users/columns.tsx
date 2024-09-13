@@ -11,24 +11,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { User } from "@/types/user";
 
 interface ColumnProps {
-  onAction: (id: number, path: string, action: string) => void;
+  onAction: (userAccountId: number, path: string, action: string) => void;
 }
-
-export type User = {
-  id: number;
-  username: string;
-  role: string;
-  status: string;
-  confirmed: boolean;
-  email: string;
-  created_at: string;
-  avatar_url: string;
-  date_of_birth: string;
-  first_name: string;
-  last_name: string;
-};
 
 export const columns = (props: ColumnProps): ColumnDef<User>[] => [
   {
@@ -103,7 +90,7 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
     id: "actions",
     cell: ({ row }) => {
       const user = row.original;
-      const id = user.id;
+      const userAccountId = user.userAccountId;
 
       return (
         <div className="flex justify-cente">
@@ -116,25 +103,30 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              {row.getValue("confirmed") !== true && (
-                <DropdownMenuItem
-                  onClick={() =>
-                    props.onAction(
-                      id,
-                      "/userAccounts/confirmAccount",
-                      "confirm"
-                    )
-                  }
-                >
-                  Confirm
-                </DropdownMenuItem>
-              )}
+              {row.getValue("confirmed") !== true &&
+                user.role !== "administrator" && (
+                  <DropdownMenuItem
+                    onClick={() =>
+                      props.onAction(
+                        userAccountId,
+                        "/admin/confirmAccount",
+                        "confirm"
+                      )
+                    }
+                  >
+                    Confirm
+                  </DropdownMenuItem>
+                )}
               {row.getValue("status") !== "block" && (
                 <>
                   {row.getValue("status") !== "active" && (
                     <DropdownMenuItem
                       onClick={() =>
-                        props.onAction(id, "/admin/unsuspend", "activate")
+                        props.onAction(
+                          userAccountId,
+                          "/admin/unsuspend",
+                          "activate"
+                        )
                       }
                     >
                       Activate
@@ -144,7 +136,11 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
                   {row.getValue("status") !== "suspended" && (
                     <DropdownMenuItem
                       onClick={() =>
-                        props.onAction(id, "/admin/suspend", "suspend")
+                        props.onAction(
+                          userAccountId,
+                          "/admin/suspend",
+                          "suspend"
+                        )
                       }
                     >
                       Suspend
@@ -153,7 +149,7 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
                   {row.getValue("status") !== "block" && (
                     <DropdownMenuItem
                       onClick={() =>
-                        props.onAction(id, "/admin/block", "block")
+                        props.onAction(userAccountId, "/admin/block", "block")
                       }
                     >
                       Block

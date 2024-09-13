@@ -51,6 +51,7 @@ const CategoryCreateDialog = (props: CategoryCreateDialogProps) => {
         props.onCreate(response.data);
       })
       .catch((error) => {
+        props.onOpenChange(false);
         console.log("Couldn't create category!", error);
       });
   };

@@ -1,10 +1,12 @@
 import { RestaurantRequest } from "@/types/restaurant";
 import axios from "axios";
-import { act, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
+import { useToast } from "@/hooks/use-toast";
 
 export default function RestaurantRequestsTable() {
+  const { toast } = useToast();
   const [data, setData] = useState<RestaurantRequest[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,11 +30,79 @@ export default function RestaurantRequestsTable() {
   }, []);
 
   const handleActions = (action: string, requestId: number) => {
-    if (action === "approve") {
-      // TODO
-    } else {
-      // TODO
-    }
+    const endpoint = action === "approve" ? "approveRequest" : "denyRequest";
+    const toastMessage =
+      action === "approve"
+        ? {
+            title: "Request successfully approved!",
+            description: "Restaurant can be used now.",
+          }
+        : {
+            title: "Request successfully denied!",
+            description: "Restaurant can't be used now.",
+          };
+
+    axios
+      .put(
+        `http://localhost:8080/v1/requestForRestaurants/${endpoint}/${requestId}`
+      )
+      .then(() => {
+        toast({
+          variant: "default",
+          title: toastMessage.title,
+          description: toastMessage.description,
+        });
+
+        setData((prevData) => {
+          return (
+            prevData?.filter((request) => request.id !== requestId) || null
+          );
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    // if (action === "approve") {
+    //   axios
+    //     .post(
+    //       `http://localhost:8080/v1/requestForRestaurants/approveRequest/${requestId}`
+    //     )
+    //     .then(() => {
+    //       toast({
+    //         variant: "default",
+    //         title: "Request successfully approved!",
+    //         description: "Restaurant can be used now.",
+    //       });
+    //       setData((prevData) => {
+    //         return (
+    //           prevData?.filter((request) => request.id !== requestId) || null
+    //         );
+    //       });
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // } else {
+    //   axios
+    //     .post(
+    //       `http://localhost:8080/v1/requestForRestaurants/denyRequest/${requestId}`
+    //     )
+    //     .then(() => {
+    //       toast({
+    //         variant: "default",
+    //         title: "Request successfully denied!",
+    //         description: "Restaurant can't be used now.",
+    //       });
+    //       setData((prevData) => {
+    //         return (
+    //           prevData?.filter((request) => request.id !== requestId) || null
+    //         );
+    //       });
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // }
   };
 
   if (loading) return <p>Loading...</p>;
