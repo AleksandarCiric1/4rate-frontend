@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { LoginDefaultValues, LoginSchema } from "@/schemas/login-schema";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import AuthLayout from "../components/auth-layout";
+import { login } from "@/services/user-service";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
@@ -42,7 +43,9 @@ export const LoginForm = () => {
       .then((response) => {
         console.log(response);
         setTimeout(() => {
-          navigate("/main-page");
+          login(response.data);
+          if (response.data.role === "administrator") navigate("/admin");
+          else navigate("/");
           setIsLoading(false);
         }, 1000);
       })
@@ -102,6 +105,7 @@ export const LoginForm = () => {
                   </FormItem>
                 )}
               />
+
               <Button type="submit" className="w-full">
                 Login
               </Button>

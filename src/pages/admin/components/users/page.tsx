@@ -42,7 +42,7 @@ export default function UsersTable() {
         setData(
           (prevData) =>
             prevData?.map((user) => {
-              if (user.userAccountId === userAccountId) {
+              if (user.id === userAccountId) {
                 if (action === "confirm") return { ...user, confirmed: true };
                 else if (action === "activate")
                   return { ...user, status: "active" };

@@ -1,16 +1,15 @@
 export type User = {
   id: number;
-  userAccountId: number;
   username: string;
   role: string;
   status: string;
   confirmed: boolean;
   email: string;
-  created_at: string;
-  avatar_url: string;
-  date_of_birth: string;
-  first_name: string;
-  last_name: string;
+  createdAt: string;
+  avatarUrl: string;
+  dateOfBirth: string;
+  firstName: string;
+  lastName: string;
 };
 
 export type UserAccountCreation = {
@@ -19,4 +18,12 @@ export type UserAccountCreation = {
   confirmPassword: string;
   role: string;
   email: string;
+};
+
+export type UserProfileData = {
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  dateOfBrith: Date;
 };

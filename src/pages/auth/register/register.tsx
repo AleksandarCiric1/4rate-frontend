@@ -55,7 +55,7 @@ export const RegisterForm = () => {
       .then((response) => {
         console.log(response);
         setTimeout(() => {
-          navigate("/main-page");
+          navigate("/login");
           setIsLoading(false);
         }, 1000);
       })

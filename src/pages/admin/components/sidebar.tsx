@@ -53,11 +53,7 @@ function Sidebar() {
         <CommandGroup heading="Settings">
           <CommandItem>
             <User className="mr-2 w-4 h-4" />
-            <span>Profile</span>
-          </CommandItem>
-          <CommandItem>
-            <Settings className="mr-2 w-4 h-4" />
-            <span>Settings</span>
+            <Link to="profile">Profile</Link>
           </CommandItem>
         </CommandGroup>
       </CommandList>

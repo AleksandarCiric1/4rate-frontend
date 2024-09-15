@@ -90,7 +90,7 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
     id: "actions",
     cell: ({ row }) => {
       const user = row.original;
-      const userAccountId = user.userAccountId;
+      const userAccountId = user.id;
 
       return (
         <div className="flex justify-cente">

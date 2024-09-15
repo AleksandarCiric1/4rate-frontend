@@ -35,7 +35,7 @@ const Navbar = () => {
           <DropdownMenuContent>
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItemLink location="/profile" name="Profile" />
+            <DropdownMenuItemLink location="profile" name="Profile" />
             <DropdownMenuItemLink location="/login" name="Logout" />
           </DropdownMenuContent>
         </DropdownMenu>
