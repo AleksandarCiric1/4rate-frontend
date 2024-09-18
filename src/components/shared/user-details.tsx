@@ -48,9 +48,13 @@ const UserProfile = () => {
           `http://localhost:8080/v1/images/getAvatar/${getUserAccountId()}`
         );
       }, 1);
-    };
 
-    updateAvatar();
+      setTimeout(() => {
+        console.log(avatar);
+      }, 10);
+    };
+    if (user?.avatarUrl !== null && user?.avatarUrl !== undefined)
+      updateAvatar();
   }, [user?.avatarUrl]);
 
   useEffect(() => {
@@ -114,7 +118,7 @@ const UserProfile = () => {
           //   // ? `http://localhost:8080/v1/images/getAvatar/${user?.id}`
           //   // : defaultAvatar
           // }
-          src={avatar || defaultAvatar}
+          src={avatar !== null ? avatar : defaultAvatar}
           alt="User Avatar"
           className="w-24 h-24 rounded-full border dark:border-gray-600"
         />

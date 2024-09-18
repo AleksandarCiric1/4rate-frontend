@@ -1,6 +1,6 @@
 export const About = () => {
   return (
-    <div className="mt-10 mx-auto px-6 py-12 max-w-4xl bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+    <div className="mt-10 mx-auto mb-10 px-6 py-12 max-w-4xl bg-white dark:bg-gray-800 rounded-lg shadow-lg">
       <h1 className="text-4xl font-extrabold mb-8 text-gray-900 dark:text-white">
         About 4Rate
       </h1>

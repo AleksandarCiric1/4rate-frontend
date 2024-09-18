@@ -27,11 +27,11 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
     header: "Username",
   },
   {
-    accessorKey: "first_name",
+    accessorKey: "firstName",
     header: "First name",
   },
   {
-    accessorKey: "last_name",
+    accessorKey: "lastName",
     header: "Last name",
   },
   {
@@ -73,10 +73,10 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
     header: "Email",
   },
   {
-    accessorKey: "created_at",
+    accessorKey: "createdAt",
     header: "Created at",
     cell: ({ row }) => {
-      const createdAt = new Date(row.getValue("created_at"));
+      const createdAt = new Date(row.getValue("createdAt"));
       const formattedDate = createdAt.toLocaleDateString("en-GB", {
         day: "2-digit",
         month: "2-digit",

@@ -15,7 +15,7 @@ export default function RestaurantRequestsTable() {
     const fetchData = async () => {
       try {
         const response = await axios.get<RestaurantRequest[]>(
-          "http://localhost:8080/v1/requestForRestaurants/getAllRequest"
+          "http://localhost:8080/v1/requestForRestaurants/getAllRequests"
         );
         setData(response.data);
       } catch (err: any) {

@@ -13,8 +13,12 @@ import { FileUpload } from "@/practice/style-file-upload";
 import { FileExport } from "@/practice/test-file";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import AdminRoute from "./admin-route";
-import { MainPage } from "@/pages/main-page/main";
+import { MainPage, RestaurantsGrid } from "@/pages/main-page/main";
 import { About } from "@/components/shared/about";
+import ManagerDashboard from "@/pages/manager/manager";
+import RestaurantPage from "@/pages/manager/components/restaurant-page";
+import EditRestaurantPage from "@/pages/manager/components/edit-restaurant-form";
+import RestaurantImageUpload from "@/pages/manager/components/image-upload";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -27,11 +31,29 @@ const router = createBrowserRouter([
         children: [
           {
             path: "",
-            element: <></>,
+            element: <RestaurantsGrid />,
           },
           {
             path: "about",
             element: <About />,
+          },
+          {
+            path: "manager",
+            element: <ManagerDashboard />,
+            children: [
+              {
+                path: "",
+                element: <RestaurantPage />,
+              },
+              {
+                path: ":id/edit",
+                element: <EditRestaurantPage />,
+              },
+              {
+                path: ":id/addImages",
+                element: <RestaurantImageUpload />,
+              },
+            ],
           },
         ],
       },

@@ -20,8 +20,10 @@ import { LoginDefaultValues, LoginSchema } from "@/schemas/login-schema";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import AuthLayout from "../components/auth-layout";
 import { login } from "@/services/user-service";
+import { useUser } from "@/providers/user";
 
 export const LoginForm = () => {
+  const { setIsLogged, setUser } = useUser();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -43,7 +45,9 @@ export const LoginForm = () => {
       .then((response) => {
         console.log(response);
         setTimeout(() => {
-          login(response.data);
+          setIsLogged(true);
+          setUser(response.data);
+          login(response.data.id);
           if (response.data.role === "administrator") navigate("/admin");
           else navigate("/");
           setIsLoading(false);

@@ -1,8 +1,5 @@
 import Navbar from "@/components/shared/navbar";
 import Sidebar from "../admin/components/sidebar";
-import DashboardCard from "../admin/components/dashboard/dashboard-card";
-import { Folder, MessageCircle, Newspaper } from "lucide-react";
-import AnalyticsChart from "../admin/components/dashboard/analytics-chart";
 import BackButton from "../admin/components/back-button";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { Outlet } from "react-router-dom";

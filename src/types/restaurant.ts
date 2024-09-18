@@ -10,3 +10,79 @@ export type RestaurantRequest = {
   workTime: string;
   // manager_id: number; this should be object, cause we need name of manager and other data possible
 };
+
+export type UserAccount = {
+  id: number;
+  username: string;
+  role: string;
+  status: string;
+  confirmed: boolean;
+  email: string;
+  createdAt: Date | null;
+  avatarUrl: string | null;
+  dateOfBirth: Date | null;
+  firstName: string;
+  lastName: string;
+};
+
+export type Guest = {
+  id: number;
+  userAccount: UserAccount;
+};
+
+export type Comment = {
+  id: number;
+  comment: string;
+  guest: Guest;
+};
+
+export type Image = {
+  id: number;
+  imageUrl: string;
+};
+
+export type Reservation = {
+  id: number;
+  date: string;
+  description: string;
+};
+
+export type Category = {
+  id: number;
+  name: string;
+  status: boolean;
+};
+
+export type RestaurantCategory = {
+  id: number;
+  category: Category;
+};
+
+export type Grade = {
+  id: number;
+  value: number;
+  restaurantId: number;
+  guestId: number;
+};
+
+export type Phone = {
+  id: number;
+  phone: string;
+};
+
+export type Restaurant = {
+  id: number;
+  name: string;
+  description: string;
+  workTime: string;
+  status: string;
+  address: string;
+  city: string;
+  country: string;
+  restaurantPhones: Phone[];
+  images: Image[];
+  comments: Comment[];
+  reservations: Reservation[];
+  restaurantCategories: RestaurantCategory[];
+  grades: Grade[];
+};

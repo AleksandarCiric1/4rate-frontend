@@ -11,10 +11,7 @@ const MainPageLayout = ({ children }: MainPageLayout) => {
   return (
     <>
       <Header></Header>
-      <main>
-        {children}
-        {/* <Outlet /> */}
-      </main>
+      <main>{children}</main>
       <Footer></Footer>
     </>
   );

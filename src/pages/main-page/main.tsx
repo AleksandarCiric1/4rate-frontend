@@ -1,6 +1,6 @@
 import RestaurantCard from "@/components/shared/restaurant-card";
 import { MainPageLayout } from "../layouts/main-page-layout";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -9,107 +9,70 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Outlet } from "react-router-dom";
+import { Toaster } from "@/components/ui/toaster";
+import axios from "axios";
+import { Category, Restaurant } from "@/types/restaurant";
 
 const MainPage = () => {
   return (
     <MainPageLayout>
-      <RestaurantsGrid />
+      <Outlet />
+      <Toaster />
     </MainPageLayout>
   );
 };
 
-const categories = ["All", "Italian", "Chinese", "Mexican", "Japanese"];
-
-const restaurants = [
-  {
-    imageUrl: "https://via.placeholder.com/400x300",
-    name: "Restaurant A",
-    description: "A delightful place to enjoy a variety of cuisines.",
-    link: "",
-  },
-  {
-    imageUrl: "https://via.placeholder.com/400x300",
-    name: "Restaurant B",
-    description: "Experience the finest dining with a view.",
-    link: "",
-  },
-  {
-    imageUrl: "https://via.placeholder.com/400x300",
-    name: "Restaurant C",
-    description: "A cozy spot for great food and drinks.",
-    link: "",
-  },
-  {
-    imageUrl: "https://via.placeholder.com/400x300",
-    name: "Restaurant D",
-    description: "Delicious meals served with a touch of elegance.",
-    link: "",
-  },
-  {
-    imageUrl: "https://via.placeholder.com/400x300",
-    name: "Restaurant A",
-    description: "A delightful place to enjoy a variety of cuisines.",
-    link: "",
-  },
-  {
-    imageUrl: "https://via.placeholder.com/400x300",
-    name: "Restaurant B",
-    description: "Experience the finest dining with a view.",
-    link: "",
-  },
-  {
-    imageUrl: "https://via.placeholder.com/400x300",
-    name: "Restaurant C",
-    description: "A cozy spot for great food and drinks.",
-    link: "",
-  },
-  {
-    imageUrl: "https://via.placeholder.com/400x300",
-    name: "Restaurant D",
-    description: "Delicious meals served with a touch of elegance.",
-    link: "",
-  },
-  {
-    imageUrl: "https://via.placeholder.com/400x300",
-    name: "Restaurant A",
-    description: "A delightful place to enjoy a variety of cuisines.",
-    link: "",
-  },
-  {
-    imageUrl: "https://via.placeholder.com/400x300",
-    name: "Restaurant B",
-    description: "Experience the finest dining with a view.",
-    link: "",
-  },
-  {
-    imageUrl: "https://via.placeholder.com/400x300",
-    name: "Restaurant C",
-    description: "A cozy spot for great food and drinks.",
-    link: "",
-  },
-  {
-    imageUrl: "https://via.placeholder.com/400x300",
-    name: "Restaurant D",
-    description: "Delicious meals served with a touch of elegance.",
-    link: "",
-  },
-];
-
 const PAGE_SIZE = 10;
 
 const RestaurantsGrid = () => {
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null
+  );
   const [currentPage, setCurrentPage] = useState(1);
 
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/v1/restaurants/getAll")
+      .then((response) => {
+        setRestaurants(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    axios
+      .get("http://localhost:8080/v1/categories/getAll")
+      .then((response) => {
+        setCategories(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  // const filteredRestaurants = useMemo(() => {
+  //   return restaurants.filter((restaurant) =>
+  //     restaurant.name.toLowerCase().includes(searchQuery.toLowerCase())
+  //   );
+  // }, [searchQuery, selectedCategory]);
+
   const filteredRestaurants = useMemo(() => {
-    return restaurants.filter(
-      (restaurant) =>
-        restaurant.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        (selectedCategory === "All" ||
-          restaurant.description.includes(selectedCategory))
-    );
-  }, [searchQuery, selectedCategory]);
+    return restaurants
+      .filter((restaurant) =>
+        restaurant.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      .filter((restaurant) =>
+        selectedCategory
+          ? restaurant.restaurantCategories.some(
+              (rc) => rc.category.id === selectedCategory.id
+            )
+          : true
+      );
+  }, [searchQuery, selectedCategory, restaurants]);
 
   const totalPages = Math.ceil(filteredRestaurants.length / PAGE_SIZE);
   const currentRestaurants = useMemo(() => {
@@ -138,7 +101,7 @@ const RestaurantsGrid = () => {
         <div className="mb-6 flex flex-wrap gap-4">
           {categories.map((category) => (
             <button
-              key={category}
+              key={category.id}
               onClick={() => setSelectedCategory(category)}
               className={`px-4 py-2 rounded-lg border transition-colors duration-300 ${
                 selectedCategory === category
@@ -146,7 +109,7 @@ const RestaurantsGrid = () => {
                   : "bg-white text-gray-700 border-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600"
               }`}
             >
-              {category}
+              {category.name}
             </button>
           ))}
         </div>
@@ -155,10 +118,11 @@ const RestaurantsGrid = () => {
           {currentRestaurants.map((restaurant, index) => (
             <RestaurantCard
               key={index}
-              imageUrl={restaurant.imageUrl}
+              restaurant={restaurant}
+              // imageUrl={restaurant.images[0].imageUrl}
               name={restaurant.name}
               description={restaurant.description}
-              link={restaurant.link}
+              link=""
             />
           ))}
         </div>
