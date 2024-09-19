@@ -1,4 +1,4 @@
-import { Star } from "lucide-react";
+import { SquareArrowOutUpRight } from "lucide-react";
 
 interface MenuButtonProps {
   url: string;
@@ -13,7 +13,7 @@ const MenuButton = ({ url, label }: MenuButtonProps) => {
       rel="noopener noreferrer"
       className="flex items-center p-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition duration-300"
     >
-      <Star className="mr-2" />
+      <SquareArrowOutUpRight className="mr-2" />
       <span>{label}</span>
     </a>
   );

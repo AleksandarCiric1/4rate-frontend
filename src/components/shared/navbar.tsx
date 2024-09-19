@@ -11,8 +11,10 @@ import {
 } from "../ui/dropdown-menu";
 import DropdownMenuItemLink from "./dropdown-menu-item-link";
 import { ThemeToggler } from "./theme-toggler";
+import { useUser } from "@/providers/user";
 
 const Navbar = () => {
+  const { user } = useUser();
   return (
     <div className="bg-primary dark:bg-slate-700 text-white py-2 px-5 flex justify-between">
       <Link to="/">
@@ -27,7 +29,13 @@ const Navbar = () => {
         <DropdownMenu>
           <DropdownMenuTrigger className="focus:outline-none">
             <Avatar>
-              <AvatarImage src={defaultAvatar} />
+              <AvatarImage
+                src={
+                  user
+                    ? `http://localhost:8080/v1/images/getAvatar/${user.id}`
+                    : defaultAvatar
+                }
+              />
               <AvatarFallback>4Rate</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>

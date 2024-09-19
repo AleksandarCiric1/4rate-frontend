@@ -9,7 +9,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import axios from "axios";
 import { Category, Restaurant } from "@/types/restaurant";
@@ -26,12 +26,11 @@ const MainPage = () => {
 const PAGE_SIZE = 10;
 
 const RestaurantsGrid = () => {
+  const navigate = useNavigate();
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null
-  );
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]); // Modified to array for multiple selections
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -54,11 +53,17 @@ const RestaurantsGrid = () => {
       });
   }, []);
 
-  // const filteredRestaurants = useMemo(() => {
-  //   return restaurants.filter((restaurant) =>
-  //     restaurant.name.toLowerCase().includes(searchQuery.toLowerCase())
-  //   );
-  // }, [searchQuery, selectedCategory]);
+  const toggleCategory = (category: Category) => {
+    setSelectedCategories((prevSelected) => {
+      if (prevSelected.some((selected) => selected.id === category.id)) {
+        // If category is already selected, remove it
+        return prevSelected.filter((selected) => selected.id !== category.id);
+      } else {
+        // Otherwise, add the category to the list
+        return [...prevSelected, category];
+      }
+    });
+  };
 
   const filteredRestaurants = useMemo(() => {
     return restaurants
@@ -66,13 +71,15 @@ const RestaurantsGrid = () => {
         restaurant.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
       .filter((restaurant) =>
-        selectedCategory
-          ? restaurant.restaurantCategories.some(
-              (rc) => rc.category.id === selectedCategory.id
+        selectedCategories.length > 0
+          ? selectedCategories.every((selectedCategory) =>
+              restaurant.restaurantCategories.some(
+                (rc) => rc.category.id === selectedCategory.id
+              )
             )
           : true
       );
-  }, [searchQuery, selectedCategory, restaurants]);
+  }, [searchQuery, selectedCategories, restaurants]);
 
   const totalPages = Math.ceil(filteredRestaurants.length / PAGE_SIZE);
   const currentRestaurants = useMemo(() => {
@@ -80,6 +87,10 @@ const RestaurantsGrid = () => {
     const endIndex = startIndex + PAGE_SIZE;
     return filteredRestaurants.slice(startIndex, endIndex);
   }, [currentPage, filteredRestaurants]);
+
+  const handleOnCardClick = (restaurantId: number) => {
+    navigate(`${restaurantId}/restaurant`);
+  };
 
   return (
     <main className="mt-1 py-12 bg-gray-50 dark:bg-gray-900">
@@ -102,9 +113,11 @@ const RestaurantsGrid = () => {
           {categories.map((category) => (
             <button
               key={category.id}
-              onClick={() => setSelectedCategory(category)}
+              onClick={() => toggleCategory(category)}
               className={`px-4 py-2 rounded-lg border transition-colors duration-300 ${
-                selectedCategory === category
+                selectedCategories.some(
+                  (selectedCategory) => selectedCategory.id === category.id
+                )
                   ? "bg-blue-500 text-white border-blue-500"
                   : "bg-white text-gray-700 border-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600"
               }`}
@@ -117,9 +130,9 @@ const RestaurantsGrid = () => {
         <div className="grid gap-8 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 mx-8">
           {currentRestaurants.map((restaurant, index) => (
             <RestaurantCard
+              onClick={handleOnCardClick}
               key={index}
               restaurant={restaurant}
-              // imageUrl={restaurant.images[0].imageUrl}
               name={restaurant.name}
               description={restaurant.description}
               link=""

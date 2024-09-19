@@ -5,22 +5,28 @@ import { Restaurant } from "@/types/restaurant";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 interface RestaurantCardProps {
-  restaurant?: Restaurant;
-  imageUrl?: string;
+  onClick: (restaurantId: number) => void;
+  restaurant: Restaurant;
   name: string;
   description: string;
   link: string;
 }
 
 const RestaurantCard: React.FC<RestaurantCardProps> = ({
+  onClick,
   restaurant,
-  imageUrl,
   name,
   description,
   link,
 }) => {
+  const handleOnClickCard = (restaurantId: number) => {
+    onClick(restaurantId);
+  };
   return (
-    <Card className="transform transition-transform duration-300 hover:scale-105 h-[350px]">
+    <Card
+      onClick={() => handleOnClickCard(restaurant?.id)}
+      className="transform transition-transform duration-300 hover:scale-105 h-[350px]"
+    >
       <Link to={link} className="block rounded-lg overflow-hidden">
         <img
           src={

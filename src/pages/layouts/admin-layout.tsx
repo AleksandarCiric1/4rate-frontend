@@ -4,6 +4,7 @@ import BackButton from "../admin/components/back-button";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { Outlet } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
+import { UserChartComponent } from "../admin/components/dashboard/user-chart";
 
 const AdminLayout = () => {
   return (
@@ -18,29 +19,7 @@ const AdminLayout = () => {
             <div className="flex flex-row">
               <BackButton text="Go back" link="/admin" />
             </div>
-            {/* <div className="flex flex-col md:flex-row justify-between gap-5 mb-5">
-              <DashboardCard
-                title="Posts"
-                count={100}
-                icon={<Newspaper className="text-slate-500" size={72} />}
-              />
-              <DashboardCard
-                title="Categories"
-                count={12}
-                icon={<Folder className="text-slate-500" size={72} />}
-              />
-              <DashboardCard
-                title="Users"
-                count={750}
-                icon={<Newspaper className="text-slate-500" size={72} />}
-              />
-              <DashboardCard
-                title="Comments"
-                count={100}
-                icon={<MessageCircle className="text-slate-500" size={72} />}
-              />
-            </div>
-            <AnalyticsChart /> */}
+
             <Outlet />
           </div>
         </div>

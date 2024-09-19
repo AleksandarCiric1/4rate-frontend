@@ -19,6 +19,11 @@ import ManagerDashboard from "@/pages/manager/manager";
 import RestaurantPage from "@/pages/manager/components/restaurant-page";
 import EditRestaurantPage from "@/pages/manager/components/edit-restaurant-form";
 import RestaurantImageUpload from "@/pages/manager/components/image-upload";
+import GuestDashboard from "@/pages/guest/guest";
+import { RestaurantDetailsPage } from "@/pages/shared/restaurant-details";
+import AddReview from "@/pages/guest/components/review-add";
+import { UserChartComponent } from "@/pages/admin/components/dashboard/user-chart";
+import Dashboard from "@/pages/admin/components/dashboard/dashboard";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -38,6 +43,10 @@ const router = createBrowserRouter([
             element: <About />,
           },
           {
+            path: ":id/restaurant",
+            element: <RestaurantDetailsPage />,
+          },
+          {
             path: "manager",
             element: <ManagerDashboard />,
             children: [
@@ -55,6 +64,20 @@ const router = createBrowserRouter([
               },
             ],
           },
+          {
+            path: "guest",
+            element: <GuestDashboard />,
+            children: [
+              {
+                path: ":id/restaurant",
+                element: <>AA</>,
+              },
+              {
+                path: ":id/addReview",
+                element: <AddReview />,
+              },
+            ],
+          },
         ],
       },
       {
@@ -67,7 +90,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "",
-            element: "",
+            element: <Dashboard />,
           },
           { path: "users", element: <UsersTable /> },
           { path: "categories", element: <CategoriesTable /> },

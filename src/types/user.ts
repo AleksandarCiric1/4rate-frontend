@@ -27,3 +27,14 @@ export type UserProfileData = {
   lastName: string;
   dateOfBrith: Date;
 };
+
+export type UsersPerMonth = {
+  year: number;
+  month: number;
+  userCount: number;
+};
+
+export type UsersChartData = {
+  month: string;
+  userCount: number;
+};

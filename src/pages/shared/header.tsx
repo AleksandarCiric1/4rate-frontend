@@ -58,12 +58,15 @@ export const Header = () => {
         {user?.role === "manager" && (
           <h4 className="text-xl font-medium font-sans">for manager</h4>
         )}
+        {user?.role === "guest" && (
+          <h4 className="text-xl font-medium font-sans">for guest</h4>
+        )}
       </div>
 
       <div>
         <div className="flex items-center space-x-4">
           {!isLogged && (
-            <Button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-slate-600">
+            <Button className="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-md dark:hover:bg-slate-500">
               <Link to="/login">Get started</Link>
             </Button>
           )}

@@ -70,6 +70,15 @@ export type Phone = {
   phone: string;
 };
 
+export type Review = {
+  id: number;
+  comment: string;
+  grade: number;
+  guest: Guest;
+  restaurantId: number;
+  createdAt: Date;
+};
+
 export type Restaurant = {
   id: number;
   name: string;
@@ -82,7 +91,19 @@ export type Restaurant = {
   restaurantPhones: Phone[];
   images: Image[];
   comments: Comment[];
+  reviews: Review[];
   reservations: Reservation[];
   restaurantCategories: RestaurantCategory[];
   grades: Grade[];
+};
+
+export type RestaurantsPerMonth = {
+  year: number;
+  month: number;
+  restaurantCount: number;
+};
+
+export type RestaurantChartData = {
+  month: string;
+  restaurantCount: number;
 };
