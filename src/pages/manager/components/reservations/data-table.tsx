@@ -1,20 +1,12 @@
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  Form,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Pagination,
   PaginationContent,
@@ -24,44 +16,68 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { ReactNode, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { User } from "@/types/user";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { addDays, format, startOfDay } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import React, { ReactNode } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   children: ReactNode;
+  onDateChange: (date: Date) => void;
 }
+
+const FormSchema = z.object({
+  date: z.date({ required_error: "Please select date" }),
+});
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   children,
+  onDateChange,
 }: DataTableProps<TData, TValue>) {
-  const [globalFilter, setGlobalFilter] = useState("");
+  const today = startOfDay(new Date());
+  const maxDate = addDays(today, 6);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     state: {
-      globalFilter,
-    },
-    onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: (row, columnId, filterValue) => {
-      const searchValue = filterValue.toLowerCase();
-      const username = (row.original as User).username?.toLowerCase() || "";
-      const firstName = (row.original as User).firstName?.toLowerCase() || "";
-      const lastName = (row.original as User).lastName?.toLowerCase() || "";
-
-      return (
-        username.includes(searchValue) ||
-        firstName.includes(searchValue) ||
-        lastName.includes(searchValue)
-      );
+      columnFilters,
     },
   });
 
@@ -91,15 +107,75 @@ export function DataTable<TData, TValue>({
 
   const visiblePages = getVisiblePages();
 
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      date: undefined,
+    },
+  });
+
+  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    console.log(data);
+  };
+
+  const handleDateSelect = (date: Date) => {
+    onDateChange(date);
+  };
+
   return (
     <div>
       <div className="flex items-center py-4 justify-between">
-        <Input
-          placeholder="Filter users ..."
-          value={globalFilter ?? ""}
-          onChange={(event) => setGlobalFilter(event.target.value)}
-          className="max-w-sm"
-        />
+        <Form {...form}>
+          <div className="flex gap-2">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="date"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col w-full mb-5">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-full p-0">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={(date) => {
+                            field.onChange(date);
+                            if (date) {
+                              handleDateSelect(date);
+                            }
+                          }}
+                          initialFocus
+                          disabled={(day) => day < today || day > maxDate}
+                        />
+                      </PopoverContent>
+                    </Popover>
+
+                    <FormDescription>
+                      Filter reservations by choosing date
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </form>
+          </div>
+        </Form>
         {children}
       </div>
       <div className="rounded-md border">

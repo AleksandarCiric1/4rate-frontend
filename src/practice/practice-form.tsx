@@ -1,41 +1,14 @@
-import { FileUploadInput } from "@/components/shared/file-upload-input";
-import { Form, FormLabel } from "@/components/ui/form";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectLabel,
-  SelectGroup,
-  SelectItem,
-} from "@/components/ui/select";
+import React from "react";
 
-export const PracticeForm = () => {
+const Practice = () => {
   return (
-    <>
-      <Select>
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Select a fruit" />
-        </SelectTrigger>
-        <SelectContent className="bg-white text-black border border-gray-300">
-          <SelectGroup>
-            <SelectLabel>Fruits</SelectLabel>
-            <SelectItem
-              value="apple"
-              className="text-black bg-white hover:bg-gray-100"
-            >
-              Apple
-            </SelectItem>
-            <SelectItem value="banana">Banana</SelectItem>
-            <SelectItem value="blueberry">Blueberry</SelectItem>
-            <SelectItem value="grapes">Grapes</SelectItem>
-            <SelectItem value="pineapple">Pineapple</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-
-      <label>Images</label>
-      <FileUploadInput multiple={true} accept="image/*" />
-    </>
+    <div className="w-full h-full  flex justify-center items-center">
+      <div className="bg-blue-600 relative rounded-2xl">
+        Kucica
+        <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+      </div>
+    </div>
   );
 };
+
+export default Practice;

@@ -1,21 +1,18 @@
-import DropdownMenuItemLink from "@/components/shared/dropdown-menu-item-link";
 import {
-  CommandGroup,
   Command,
   CommandEmpty,
-  CommandInput,
-  CommandList,
+  CommandGroup,
   CommandItem,
+  CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
 import {
+  Folders,
   LayoutDashboard,
   Newspaper,
-  Folders,
-  Settings,
+  StickyNote,
   User,
   Utensils,
-  StickyNote,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 

@@ -8,10 +8,9 @@ import { LoginForm } from "@/pages/auth/login/login";
 import { RegisterForm } from "@/pages/auth/register/register";
 import { NotFoundPage } from "@/pages/errors/not-found";
 import { DefaultLayout } from "@/pages/layouts/default-layout";
-import { PracticeForm } from "@/practice/practice-form";
 import { FileUpload } from "@/practice/style-file-upload";
 import { FileExport } from "@/practice/test-file";
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import AdminRoute from "./admin-route";
 import { MainPage, RestaurantsGrid } from "@/pages/main-page/main";
 import { About } from "@/components/shared/about";
@@ -22,8 +21,11 @@ import RestaurantImageUpload from "@/pages/manager/components/image-upload";
 import GuestDashboard from "@/pages/guest/guest";
 import { RestaurantDetailsPage } from "@/pages/shared/restaurant-details";
 import AddReview from "@/pages/guest/components/review-add";
-import { UserChartComponent } from "@/pages/admin/components/dashboard/user-chart";
 import Dashboard from "@/pages/admin/components/dashboard/dashboard";
+import ReservationsPage from "@/pages/manager/components/reservations/page";
+import { NotificationPage } from "@/practice/notification-practice";
+import Practice from "@/practice/practice-form";
+import UserReservationsPage from "@/pages/guest/components/reservations/page";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -47,6 +49,14 @@ const router = createBrowserRouter([
             element: <RestaurantDetailsPage />,
           },
           {
+            path: "notifications",
+            element: <NotificationPage />,
+          },
+          {
+            path: ":id/reservations",
+            element: <ReservationsPage />,
+          },
+          {
             path: "manager",
             element: <ManagerDashboard />,
             children: [
@@ -68,6 +78,10 @@ const router = createBrowserRouter([
             path: "guest",
             element: <GuestDashboard />,
             children: [
+              {
+                path: "reservations",
+                element: <UserReservationsPage />,
+              },
               {
                 path: ":id/restaurant",
                 element: <>AA</>,
@@ -103,7 +117,7 @@ const router = createBrowserRouter([
   },
   {
     path: "practice",
-    element: <PracticeForm />,
+    element: <Practice />,
   },
   {
     path: "login",

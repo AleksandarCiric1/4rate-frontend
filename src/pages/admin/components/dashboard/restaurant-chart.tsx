@@ -1,10 +1,8 @@
-import { TrendingUp } from "lucide-react";
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { useTheme } from "@/components/shared/theme-provider";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -14,26 +12,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { UsersChartData, UsersPerMonth } from "@/types/user";
 import { RestaurantChartData, RestaurantsPerMonth } from "@/types/restaurant";
-import { useTheme } from "@/components/shared/theme-provider";
-
-const chartData = [
-  { month: "August", userCount: 120 },
-  { month: "September", userCount: 150 },
-  { month: "October", userCount: 200 },
-  { month: "November", userCount: 170 },
-  { month: "December", userCount: 220 },
-  { month: "January", userCount: 180 },
-  { month: "February", userCount: 160 },
-  { month: "March", userCount: 190 },
-  { month: "April", userCount: 210 },
-  { month: "May", userCount: 230 },
-  { month: "June", userCount: 250 },
-  { month: "July", userCount: 240 },
-];
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 const chartConfig = {
   userCount: {

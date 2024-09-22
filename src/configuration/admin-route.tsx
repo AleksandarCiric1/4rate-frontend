@@ -8,7 +8,7 @@ interface AdminRouteProps {
 
 const AdminRoute = ({ children }: AdminRouteProps) => {
   const location = useLocation();
-  const isLoggedIn = !!sessionStorage.getItem("accountId"); // Check if user is logged in
+  const isLoggedIn = !!sessionStorage.getItem("isLogged"); // Check if user is logged in
 
   return isLoggedIn ? children : <NotFoundPage />;
 };

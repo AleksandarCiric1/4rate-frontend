@@ -93,7 +93,7 @@ const RestaurantsGrid = () => {
   };
 
   return (
-    <main className="mt-1 py-12 bg-gray-50 dark:bg-gray-900">
+    <main className="mt-1 dark:mt-0 py-12 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
           Best Restaurants

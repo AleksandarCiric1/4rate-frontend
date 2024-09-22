@@ -7,6 +7,7 @@ import axios from "axios";
 import { getUserAccountId } from "@/services/user-service";
 import { ChangePasswordDialog } from "../dialogs/change-password-dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/providers/user";
 
 const initialUserData = {
   username: "john_doe",
@@ -19,7 +20,8 @@ const initialUserData = {
 
 const UserProfile = () => {
   const { toast } = useToast();
-  const [user, setUser] = useState<User | null>(null);
+  const { user } = useUser();
+  const [userProfile, setUserProfile] = useState<User | null>(null);
   const [isEditUsernDialogOpen, setIsEditUserDialogOpen] =
     useState<boolean>(false);
   const [userData, setUserData] = useState<UserProfileData | null>(null);
@@ -31,11 +33,10 @@ const UserProfile = () => {
   const [avatar, setAvatar] = useState<string | null>(null);
 
   useEffect(() => {
-    const id = getUserAccountId();
     axios
-      .get(`http://localhost:8080/v1/userAccounts/getUser/${id}`)
+      .get(`http://localhost:8080/v1/admin/getUser/${user?.id}`)
       .then((response) => {
-        setUser(response.data);
+        setUserProfile(response.data);
       });
   }, []);
 
@@ -44,24 +45,22 @@ const UserProfile = () => {
       setAvatar(null);
 
       setTimeout(() => {
-        setAvatar(
-          `http://localhost:8080/v1/images/getAvatar/${getUserAccountId()}`
-        );
+        setAvatar(`http://localhost:8080/v1/images/getAvatar/${user?.id}`);
       }, 1);
 
       setTimeout(() => {
         console.log(avatar);
       }, 10);
     };
-    if (user?.avatarUrl !== null && user?.avatarUrl !== undefined)
+    if (userProfile?.avatarUrl !== null && userProfile?.avatarUrl !== undefined)
       updateAvatar();
-  }, [user?.avatarUrl]);
+  }, [userProfile?.avatarUrl]);
 
   useEffect(() => {
-    if (user) {
-      console.log(user);
+    if (userProfile) {
+      console.log(userProfile);
     }
-  }, [user]);
+  }, [userProfile]);
 
   const handleEdit = () => {
     setIsEditUserDialogOpen(true);
@@ -79,7 +78,7 @@ const UserProfile = () => {
   };
 
   const handleEditUser = (editedUser: User) => {
-    setUser(editedUser);
+    setUserProfile(editedUser);
     setIsEditUserDialogOpen(false);
   };
 
@@ -124,9 +123,11 @@ const UserProfile = () => {
         />
         <div>
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-            {user?.firstName} {user?.lastName}
+            {userProfile?.firstName} {userProfile?.lastName}
           </h2>
-          <p className="text-gray-500 dark:text-gray-400">@{user?.username}</p>
+          <p className="text-gray-500 dark:text-gray-400">
+            @{userProfile?.username}
+          </p>
           <Button onClick={handleEdit} className="mt-2">
             Edit Profile
           </Button>
@@ -137,35 +138,41 @@ const UserProfile = () => {
         <div className="font-medium text-gray-900 dark:text-gray-100">
           Username:
         </div>
-        <div className="text-gray-700 dark:text-gray-400">{user?.username}</div>
+        <div className="text-gray-700 dark:text-gray-400">
+          {userProfile?.username}
+        </div>
 
         <div className="font-medium text-gray-900 dark:text-gray-100">
           First Name:
         </div>
         <div className="text-gray-700 dark:text-gray-400">
-          {user?.firstName}
+          {userProfile?.firstName}
         </div>
 
         <div className="font-medium text-gray-900 dark:text-gray-100">
           Last Name:
         </div>
-        <div className="text-gray-700 dark:text-gray-400">{user?.lastName}</div>
+        <div className="text-gray-700 dark:text-gray-400">
+          {userProfile?.lastName}
+        </div>
 
         <div className="font-medium text-gray-900 dark:text-gray-100">
           Email:
         </div>
-        <div className="text-gray-700 dark:text-gray-400">{user?.email}</div>
+        <div className="text-gray-700 dark:text-gray-400">
+          {userProfile?.email}
+        </div>
 
         <div className="font-medium text-gray-900 dark:text-gray-100">
           Date of Birth:
         </div>
         <div className="text-gray-700 dark:text-gray-400">
-          {user?.dateOfBirth ? formatDate(user.dateOfBirth) : ""}
+          {userProfile?.dateOfBirth ? formatDate(userProfile.dateOfBirth) : ""}
         </div>
       </div>
-      {user && (
+      {userProfile && (
         <EditUserDialog
-          user={user}
+          user={userProfile}
           onEdit={handleEditUser}
           isOpen={isEditUsernDialogOpen}
           onOpenChange={setIsEditUserDialogOpen}

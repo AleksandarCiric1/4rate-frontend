@@ -4,7 +4,6 @@ import { useUser } from "@/providers/user";
 import { ManagerActions } from "@/types/manager";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { RestaurantDetailsPage } from "@/pages/shared/restaurant-details";
-import { Restaurant } from "@/types/restaurant";
 
 const RestaurantPage = () => {
   const { user } = useUser();
@@ -12,22 +11,25 @@ const RestaurantPage = () => {
     name: "",
     description: "",
     workTime: "",
+    capacity: "", // Initialize capacity as an empty string to avoid default 0
   });
   const [managerActions, setManagerActions] = useState<ManagerActions | null>(
     null
   );
-  const [restaurant, setRestaurant] = useState(); // TO DO TYPE
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [workTimeError, setWorkTimeError] = useState("");
   const [restaurantApproved, setRestaurantApproved] = useState(true);
+
+  // Validate the work time format with a regular expression
+  const workTimeRegex =
+    /^([01]?[0-9]|2[0-3]):[0-5][0-9]\s*-\s*([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
 
   useEffect(() => {
     if (user?.id) {
       axios
         .get(`http://localhost:8080/v1/manager/restaurant-status/${user.id}`)
         .then((response) => {
-          console.log(response.status);
           if (response.status === 200) {
             setManagerActions(ManagerActions.ACTIVE);
           } else if (response.status === 202) {
@@ -45,34 +47,45 @@ const RestaurantPage = () => {
           }
         });
     }
-  }, []);
+  }, [user?.id]);
 
-  const handleInputChange = (e: any) => {
-    setRestaurantDetails({
-      ...restaurantDetails,
-      [e.target.name]: e.target.value,
-    });
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setRestaurantDetails((prevDetails) => ({
+      ...prevDetails,
+      [name]: name === "capacity" ? value : value, // Keep capacity as string until submission
+    }));
   };
-
-  const workTimeRegex =
-    /^([01]?[0-9]|2[0-3]):[0-5][0-9]\s*-\s*([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validation: Ensure all fields are filled
     if (
       !restaurantDetails.name ||
       !restaurantDetails.description ||
-      !restaurantDetails.workTime
+      !restaurantDetails.workTime ||
+      !restaurantDetails.capacity
     ) {
       setError("All fields are required");
       return;
     }
 
+    // Validate work time format
     if (!workTimeRegex.test(restaurantDetails.workTime)) {
       setError(
         "Invalid work time format. Use HH:MM - HH:MM (e.g., 9:00 - 22:00)"
       );
+      return;
+    }
+
+    // Ensure capacity is a valid number
+    const capacityNumber = Number(restaurantDetails.capacity);
+    if (isNaN(capacityNumber) || capacityNumber <= 0) {
+      setError("Please enter a valid capacity number");
       return;
     }
 
@@ -82,7 +95,7 @@ const RestaurantPage = () => {
     axios
       .post(
         `http://localhost:8080/v1/requestForRestaurants/createRequest/${user?.id}`,
-        restaurantDetails
+        { ...restaurantDetails, capacity: capacityNumber } // Submit capacity as number
       )
       .then((response) => {
         setTimeout(() => {}, 2000);
@@ -103,10 +116,6 @@ const RestaurantPage = () => {
 
   return (
     <div className="">
-      {/* <h1 className="text-3xl font-bold mb-6">
-          Hello! Let's start with 4Rate Manager business.
-        </h1> */}
-
       {managerActions === ManagerActions.NEWREQ && (
         <div className="w-full max-w-[100%] sm:max-w-[80%] lg:max-w-[60%] mx-auto p-5">
           <h2 className="text-xl mb-4">Create a request for Restaurant</h2>
@@ -132,6 +141,18 @@ const RestaurantPage = () => {
                 value={restaurantDetails.workTime}
                 onChange={handleInputChange}
                 placeholder="e.g. 9:00 AM - 9:00 PM"
+                className="block w-full border p-2 rounded-md dark:text-black"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700">Capacity</label>
+              <input
+                type="text" // Keep it as text to prevent default value '0'
+                name="capacity"
+                value={restaurantDetails.capacity}
+                onChange={handleInputChange}
+                placeholder="Enter restaurant capacity"
                 className="block w-full border p-2 rounded-md dark:text-black"
               />
             </div>
@@ -164,6 +185,7 @@ const RestaurantPage = () => {
           </form>
         </div>
       )}
+
       {managerActions === ManagerActions.PENDING && (
         <div className="h-full flex flex-col items-center justify-center text-center">
           <h2 className="text-xl font-semibold mb-4">Request in Progress</h2>
@@ -177,6 +199,7 @@ const RestaurantPage = () => {
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-blue-500 mt-4"></div>
         </div>
       )}
+
       {managerActions === ManagerActions.ACTIVE && <RestaurantDetailsPage />}
       {managerActions === ManagerActions.FORBIDEN && (
         <div className="h-full flex flex-col items-center justify-center text-center">

@@ -1,4 +1,5 @@
 import CardWrapper from "@/components/shared/card-wrapper";
+import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -10,17 +11,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useUser } from "@/providers/user";
+import { LoginDefaultValues, LoginSchema } from "@/schemas/login-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { useEffect, useState } from "react";
-import { LoginDefaultValues, LoginSchema } from "@/schemas/login-schema";
-import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import AuthLayout from "../components/auth-layout";
-import { login } from "@/services/user-service";
-import { useUser } from "@/providers/user";
 
 export const LoginForm = () => {
   const { setIsLogged, setUser } = useUser();
@@ -47,7 +46,6 @@ export const LoginForm = () => {
         setTimeout(() => {
           setIsLogged(true);
           setUser(response.data);
-          login(response.data.id);
           if (response.data.role === "administrator") navigate("/admin");
           else navigate("/");
           setIsLoading(false);

@@ -6,16 +6,14 @@ export const About = () => {
       </h1>
       <p className="text-gray-800 dark:text-gray-300 mb-6 leading-relaxed">
         Welcome to our project! This application is designed to help users find
-        and manage restaurant reservations easily. Whether you're looking to
-        discover new dining options or manage your existing bookings, we've got
-        you covered.
+        and manage restaurant reservations easily.
       </p>
       <p className="text-gray-800 dark:text-gray-300 mb-6 leading-relaxed">
         Our platform allows guests to view restaurant details, read reviews, and
         make reservations. Restaurant managers can update their restaurant
-        information, view reservations, and manage reviews. Administrators have
-        full control over the platform, including managing user accounts and
-        overseeing restaurant data.
+        information, and view reservations. Administrators have full control
+        over the platform, including managing user accounts and overseeing
+        restaurant data.
       </p>
       <p className="text-gray-800 dark:text-gray-300 mb-6 leading-relaxed">
         We hope you find this application useful and intuitive. Feel free to

@@ -43,8 +43,23 @@ export type Image = {
 
 export type Reservation = {
   id: number;
-  date: string;
+  date: Date;
+  time: string;
   description: string;
+  status: string;
+  guest: Guest;
+  restaurant: RestaurantInfoDTO;
+};
+
+export type RestaurantInfoDTO = {
+  id: number;
+  name: string;
+  description: string;
+  workTime: string;
+  status: string;
+  address: string;
+  city: string;
+  country: string;
 };
 
 export type Category = {
@@ -88,6 +103,8 @@ export type Restaurant = {
   address: string;
   city: string;
   country: string;
+  capacity: number;
+  manager: ManagerDTO;
   restaurantPhones: Phone[];
   images: Image[];
   comments: Comment[];
@@ -95,6 +112,11 @@ export type Restaurant = {
   reservations: Reservation[];
   restaurantCategories: RestaurantCategory[];
   grades: Grade[];
+};
+
+export type ManagerDTO = {
+  id: number;
+  userAccount: UserAccount;
 };
 
 export type RestaurantsPerMonth = {

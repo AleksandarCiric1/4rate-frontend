@@ -25,6 +25,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { MakeReservationForm } from "@/pages/shared/reservation-form";
+import { ReservationChartComponent } from "../manager/components/reservations/reservation-chart";
 
 const REVIEWS_PER_PAGE = 5;
 
@@ -50,7 +52,7 @@ export function RestaurantDetailsPage() {
 
   useEffect(() => {
     let path =
-      user?.role === "manager"
+      user?.role === "manager" && restaurantId === undefined
         ? `http://localhost:8080/v1/restaurants/getRestaurant/${user?.id}`
         : `http://localhost:8080/v1/restaurants/getRestaurantById/${restaurantId}`;
 
@@ -128,8 +130,16 @@ export function RestaurantDetailsPage() {
     }
   };
 
+  const parsedRestaurantId = restaurantId
+    ? parseInt(restaurantId, 10)
+    : undefined;
+
+  if (!parsedRestaurantId && user?.role !== "manager") {
+    return <p>Error: Invalid restaurant ID</p>;
+  }
+
   return (
-    <div className="relative ">
+    <div className="relative">
       <div className="relative h-[500px] overflow-hidden">
         <Carousel className="w-full h-full">
           <CarouselContent>
@@ -185,9 +195,9 @@ export function RestaurantDetailsPage() {
           )}
         </div>
       </div>
-
-      <div className="w-full flex justify-start max-w-[100%] sm:max-w-[80%] lg:max-w-[70%]  p-2">
-        <div className="p-10 mt-10 w-full">
+      <div className="w-full flex flex-col lg:flex-row justify-start p-2">
+        {/* Left Side: Restaurant Management */}
+        <div className="w-full lg:w-2/3 p-10 mt-10">
           {user?.role === "manager" && (
             <div>
               <h2 className="text-3xl font-bold mb-4">Restaurant Management</h2>
@@ -208,6 +218,7 @@ export function RestaurantDetailsPage() {
 
           <hr className="my-7" />
 
+          {/* Restaurant Menu */}
           <div className="w-[150px]">
             <h2 className="text-2xl font-bold pb-8">Menu</h2>
             <MenuButton
@@ -218,6 +229,7 @@ export function RestaurantDetailsPage() {
 
           <hr className="my-7" />
 
+          {/* Restaurant Information */}
           <h2 className="text-3xl font-bold mb-4">
             Restaurant Basic Information
           </h2>
@@ -242,6 +254,19 @@ export function RestaurantDetailsPage() {
                 <strong>Country:</strong> {restaurant.country}
               </p>
             )}
+            {restaurant?.restaurantPhones &&
+              restaurant.restaurantPhones.length > 0 && (
+                <div className="flex items-start space-x-3 flex-wrap">
+                  <strong className="w-20 text-lg font-medium">Phones:</strong>
+                  <div className="flex flex-col gap-2">
+                    {restaurant.restaurantPhones.map((phone, index) => (
+                      <div key={index} className="">
+                        {phone.phone}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             {restaurant?.restaurantCategories &&
               restaurant.restaurantCategories.length > 0 && (
                 <div className="flex items-start space-x-3 flex-wrap">
@@ -349,6 +374,17 @@ export function RestaurantDetailsPage() {
 
             <hr className="my-7" />
 
+            <div>
+              <div className="text-2xl font-bold mb-4">Analytics</div>
+              {restaurant && (
+                <div>
+                  <ReservationChartComponent restaurantId={restaurant?.id} />
+                </div>
+              )}
+            </div>
+
+            <hr className="my-7" />
+
             {showReportForm && (
               <MonthlyReportForm onSubmit={handleMonthlyReportFormSubmit} />
             )}
@@ -370,6 +406,18 @@ export function RestaurantDetailsPage() {
             )}
           </div>
         </div>
+
+        {user &&
+          user?.role === "guest" &&
+          restaurant?.manager.userAccount.status !== "suspended" &&
+          parsedRestaurantId && (
+            <div className="w-full lg:w-1/3 p-10 mt-10">
+              <MakeReservationForm
+                restaurantId={parsedRestaurantId}
+                userId={user.id}
+              />
+            </div>
+          )}
       </div>
     </div>
   );

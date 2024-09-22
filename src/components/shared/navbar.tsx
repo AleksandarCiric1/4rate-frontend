@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "../../assets/4rate-logo.png";
+import logo from "../../assets/logo.png";
 import defaultAvatar from "../../assets/default_avatar.png";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import {
@@ -17,12 +17,7 @@ const Navbar = () => {
   const { user } = useUser();
   return (
     <div className="bg-primary dark:bg-slate-700 text-white py-2 px-5 flex justify-between">
-      <Link to="/">
-        <Avatar>
-          <AvatarImage src={logo} />
-          <AvatarFallback>4Rate</AvatarFallback>
-        </Avatar>
-      </Link>
+      <img src={logo} alt="Logo" className="h-10 object-cover mr-3" />
 
       <div className="flex items-center">
         <ThemeToggler />

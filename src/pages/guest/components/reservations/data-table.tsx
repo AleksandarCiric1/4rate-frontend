@@ -1,12 +1,12 @@
 import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import {
   Table,
   TableBody,
@@ -16,17 +16,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import { ReactNode, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { User } from "@/types/user";
+  ColumnDef,
+  ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import React, { ReactNode } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -39,29 +37,19 @@ export function DataTable<TData, TValue>({
   data,
   children,
 }: DataTableProps<TData, TValue>) {
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     state: {
-      globalFilter,
-    },
-    onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: (row, columnId, filterValue) => {
-      const searchValue = filterValue.toLowerCase();
-      const username = (row.original as User).username?.toLowerCase() || "";
-      const firstName = (row.original as User).firstName?.toLowerCase() || "";
-      const lastName = (row.original as User).lastName?.toLowerCase() || "";
-
-      return (
-        username.includes(searchValue) ||
-        firstName.includes(searchValue) ||
-        lastName.includes(searchValue)
-      );
+      columnFilters,
     },
   });
 
@@ -93,15 +81,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center py-4 justify-between">
-        <Input
-          placeholder="Filter users ..."
-          value={globalFilter ?? ""}
-          onChange={(event) => setGlobalFilter(event.target.value)}
-          className="max-w-sm"
-        />
-        {children}
-      </div>
+      <div className="flex items-center py-4 justify-between">{children}</div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>

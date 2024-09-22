@@ -16,7 +16,7 @@ export default function UsersTable() {
     const fetchData = async () => {
       try {
         const response = await axios.get<User[]>(
-          "http://localhost:8080/v1/userAccounts/getAllAccounts"
+          "http://localhost:8080/v1/admin/getAllAccounts"
         );
         setData(response.data);
       } catch (err) {

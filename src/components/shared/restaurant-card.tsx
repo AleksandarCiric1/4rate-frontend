@@ -39,7 +39,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
         />
         <CardHeader className="pb-1">
           <CardTitle className="text-2xl font-semibold text-gray-900 dark:text-white">
-            {name}
+            {name ? name : "NN"}
           </CardTitle>
         </CardHeader>
         <CardContent>

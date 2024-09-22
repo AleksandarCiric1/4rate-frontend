@@ -10,6 +10,22 @@ export type User = {
   dateOfBirth: string;
   firstName: string;
   lastName: string;
+  manager: ManagerLogin;
+  administrator: AdminLogin;
+  guest: GuestLogin;
+};
+
+export type ManagerLogin = {
+  id: number;
+  restaurantId: number;
+};
+
+export type GuestLogin = {
+  id: number;
+};
+
+export type AdminLogin = {
+  id: number;
 };
 
 export type UserAccountCreation = {

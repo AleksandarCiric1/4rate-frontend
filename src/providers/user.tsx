@@ -1,5 +1,5 @@
 import { User } from "@/types/user";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const UserContext = createContext<{
   user: User | null;
@@ -9,8 +9,27 @@ const UserContext = createContext<{
 } | null>(null);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLogged, setIsLogged] = useState(false);
+  const [user, setUser] = useState<User | null>(() => {
+    const storedUser = sessionStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
+  const [isLogged, setIsLogged] = useState(() => {
+    const storedIsLogged = sessionStorage.getItem("isLogged");
+    return storedIsLogged ? JSON.parse(storedIsLogged) : false;
+  });
+
+  useEffect(() => {
+    if (user) {
+      sessionStorage.setItem("user", JSON.stringify(user));
+    } else {
+      sessionStorage.removeItem("user");
+    }
+  }, [user]);
+
+  useEffect(() => {
+    sessionStorage.setItem("isLogged", JSON.stringify(isLogged));
+  }, [isLogged]);
 
   return (
     <UserContext.Provider value={{ user, setUser, isLogged, setIsLogged }}>
