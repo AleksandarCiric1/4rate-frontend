@@ -80,10 +80,6 @@ const router = createBrowserRouter([
                 element: <UserReservationsPage />,
               },
               {
-                path: ":id/restaurant",
-                element: <>AA</>,
-              },
-              {
                 path: ":id/addReview",
                 element: <AddReview />,
               },
@@ -108,7 +104,6 @@ const router = createBrowserRouter([
           { path: "categories", element: <CategoriesTable /> },
           { path: "restaurants", element: <RestaurantsTable /> },
           { path: "resturant-requests", element: <RestaurantRequestsTable /> },
-          { path: "profile", element: <UserProfile /> },
           { path: "profile", element: <UserProfile /> },
         ],
       },
