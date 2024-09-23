@@ -1,3 +1,4 @@
+import DataLoader from "@/components/shared/data-loader";
 import RestaurantCard from "@/components/shared/restaurant-card";
 import {
   Pagination,
@@ -36,12 +37,15 @@ const RestaurantsGrid = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     axios
       .get(restaurantEndpoints.getAll())
       .then((response) => {
         setRestaurants(response.data);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -129,17 +133,29 @@ const RestaurantsGrid = () => {
           ))}
         </div>
 
-        <div className="grid gap-8 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 mx-8">
-          {currentRestaurants.map((restaurant, index) => (
-            <RestaurantCard
-              onClick={handleOnCardClick}
-              key={index}
-              restaurant={restaurant}
-              name={restaurant.name}
-              description={restaurant.description}
-              link=""
-            />
-          ))}
+        <div className="mx-8">
+          {isLoading ? (
+            <div className="flex justify-center items-center min-h-[200px]">
+              <DataLoader size={50} color="#ff4500" />
+            </div>
+          ) : currentRestaurants.length === 0 ? (
+            <div className="text-center min-h-[200px]">
+              <p>No restaurants found.</p>
+            </div>
+          ) : (
+            <div className="grid gap-8 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+              {currentRestaurants.map((restaurant, index) => (
+                <RestaurantCard
+                  onClick={handleOnCardClick}
+                  key={index}
+                  restaurant={restaurant}
+                  name={restaurant.name}
+                  description={restaurant.description}
+                  link=""
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="flex justify-center mt-8">

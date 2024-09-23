@@ -41,7 +41,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
           className="w-full h-48 object-cover"
         />
         <CardHeader className="pb-1">
-          <CardTitle className="text-2xl font-semibold text-gray-900 dark:text-white">
+          <CardTitle className="text-2xl font-semibold text-gray-900 dark:text-white line-clamp-1">
             {name ? name : "NN"}
           </CardTitle>
         </CardHeader>
