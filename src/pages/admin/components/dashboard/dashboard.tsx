@@ -5,6 +5,7 @@ import DashboardCard from "./dashboard-card";
 import { RestaurantChartComponent } from "./restaurant-chart";
 import { UserChartComponent } from "./user-chart";
 import { AnalyticCounts } from "@/types/analytics";
+import { analyticEndpoints } from "@/environments/api-endpoints";
 
 const Dashboard = () => {
   const [numOfUsers, setNumOfUsers] = useState(0);
@@ -12,7 +13,7 @@ const Dashboard = () => {
   const [numOfReviews, setNumOfReviews] = useState(0);
   useEffect(() => {
     axios
-      .get<AnalyticCounts>("http://localhost:8080/v1/analytics/getAllCounts")
+      .get<AnalyticCounts>(analyticEndpoints.getAllCounts())
       .then((response) => {
         setNumOfRestaurants(response.data.restaurants);
         setNumOfReviews(response.data.reviews);

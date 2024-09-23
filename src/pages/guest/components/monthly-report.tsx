@@ -49,7 +49,6 @@ const MonthlyReportForm = ({ onSubmit }: MonthlyReportFormProps) => {
     <form onSubmit={handleSubmit} className="mt-6 p-4 border rounded-md">
       <h4 className="text-xl font-semibold mb-4">Generate Monthly Report</h4>
 
-      {/* Month Select */}
       <div className="mb-4">
         <label htmlFor="month" className="block text-lg mb-2">
           Select Month:
@@ -69,7 +68,6 @@ const MonthlyReportForm = ({ onSubmit }: MonthlyReportFormProps) => {
         </select>
       </div>
 
-      {/* Year Input */}
       <div className="mb-4">
         <label htmlFor="year" className="block text-lg mb-2">
           Enter Year:
@@ -85,10 +83,8 @@ const MonthlyReportForm = ({ onSubmit }: MonthlyReportFormProps) => {
         />
       </div>
 
-      {/* Error Message */}
       {error && <p className="text-red-500 mb-4">{error}</p>}
 
-      {/* Submit Button */}
       <Button
         type="submit"
         className="bg-blue-600 text-white px-4 py-2 rounded-md"

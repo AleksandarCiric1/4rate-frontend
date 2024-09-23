@@ -7,14 +7,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -24,9 +17,16 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { ReactNode, useState } from "react";
-import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { User } from "@/types/user";
+import { ReactNode, useState } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -51,7 +51,7 @@ export function DataTable<TData, TValue>({
       globalFilter,
     },
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: (row, columnId, filterValue) => {
+    globalFilterFn: (row, filterValue) => {
       const searchValue = filterValue.toLowerCase();
       const username = (row.original as User).username?.toLowerCase() || "";
       const firstName = (row.original as User).firstName?.toLowerCase() || "";

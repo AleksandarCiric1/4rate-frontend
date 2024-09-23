@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
-import { DataTable } from "./data-table";
-import axios from "axios";
-import { Reservation } from "@/types/restaurant";
-import { useParams } from "react-router-dom";
-import { columns } from "./columns";
+import { reservationEndpoints } from "@/environments/api-endpoints";
 import { toast } from "@/hooks/use-toast";
 import { ReservationStatus } from "@/types/reservation";
+import { Reservation } from "@/types/restaurant";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { columns } from "./columns";
+import { DataTable } from "./data-table";
 
 export default function ReservationsPage() {
   const { id: restaurantId } = useParams();
@@ -14,10 +15,11 @@ export default function ReservationsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!restaurantId) return;
     const fetchData = async () => {
       try {
         const response = await axios.get<Reservation[]>(
-          `http://localhost:8080/v1/reservations/getAllRestaurantReservations/${restaurantId}`
+          reservationEndpoints.getAllRestaurantReservations(restaurantId)
         );
         setData(response.data);
       } catch (err) {
@@ -35,7 +37,7 @@ export default function ReservationsPage() {
     path: string,
     action: string
   ) => {
-    let apiPath = `http://localhost:8080/v1/reservations/${path}/${reservationId}`;
+    let apiPath = reservationEndpoints.reservationActions(path, reservationId);
     axios
       .put(apiPath)
       .then((response) => {
@@ -93,7 +95,7 @@ export default function ReservationsPage() {
       .then((response) => {
         setData(response.data);
       })
-      .catch((error) => {});
+      .catch(() => {});
   };
 
   if (loading) return <p>Loading...</p>;

@@ -1,7 +1,6 @@
 import { Header } from "@/pages/shared/header";
-import { Footer } from "../shared/footer";
-import { Outlet } from "react-router-dom";
 import { ReactNode } from "react";
+import { Footer } from "../shared/footer";
 
 type MainPageLayout = {
   children: ReactNode;

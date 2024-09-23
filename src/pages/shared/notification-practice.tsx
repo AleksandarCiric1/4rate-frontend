@@ -1,23 +1,24 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Notification, NotificationType } from "@/types/notification";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Card } from "@/components/ui/card";
+import { notificationEndpoinst } from "@/environments/api-endpoints";
 import { useNotificationContext } from "@/providers/notification";
 import { useUser } from "@/providers/user";
-import { Card } from "@/components/ui/card";
+import { Notification, NotificationType } from "@/types/notification";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const NotificationBell = () => {
-  // const [userId, setUserId] = useState(1); // Replace with actual user ID logic
   const { user } = useUser();
   const [newNotifications, setNewNotifications] = useState<boolean>(false);
   const navigate = useNavigate();
   const { addNotification, emptyNotifications } = useNotificationContext();
 
   useEffect(() => {
+    if (!user || !user.id) return;
     emptyNotifications();
     const fetchNotifications = async () => {
       const response = await axios.get<Notification[]>(
-        `http://localhost:8080/v1/notifications/unread/${user?.id}`
+        notificationEndpoinst.unread(user?.id)
       );
       if (response.data.length > 0) {
         response.data.forEach((notification) => {
@@ -31,7 +32,8 @@ const NotificationBell = () => {
   }, []);
 
   useEffect(() => {
-    const url = `http://localhost:8080/v1/notifications/stream/${user?.id}`;
+    if (!user || !user.id) return;
+    const url = notificationEndpoinst.stream(user?.id);
     const sse = new EventSource(url);
 
     const notificationType =
@@ -83,9 +85,10 @@ const NotificationPage = () => {
   }, []);
 
   useEffect(() => {
+    if (!user || !user.id) return;
     emptyNotifications();
     axios
-      .post(`http://localhost:8080/v1/notifications/read/${user?.id}`)
+      .post(notificationEndpoinst.read(user?.id))
       .then(() => {})
       .catch((error) => {
         console.log(error);
@@ -118,4 +121,4 @@ const NotificationPage = () => {
   );
 };
 
-export { NotificationPage, NotificationBell };
+export { NotificationBell, NotificationPage };

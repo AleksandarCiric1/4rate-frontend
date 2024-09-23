@@ -1,14 +1,14 @@
+import { format } from "date-fns";
+import { motion } from "framer-motion";
 import React from "react";
-import { motion } from "framer-motion"; // For smooth animations
-import { format } from "date-fns"; // To format the date
 import defaultAvatar from "../../assets/default_avatar.png";
 
 interface ReviewProps {
   avatarUrl: string;
   username: string;
-  rating: number; // Assume the rating is between 1 and 5
+  rating: number;
   comment: string;
-  createdAt: string; // ISO date string
+  createdAt: string;
 }
 
 const Review: React.FC<ReviewProps> = ({
@@ -18,12 +18,11 @@ const Review: React.FC<ReviewProps> = ({
   comment,
   createdAt,
 }) => {
-  // Function to render stars based on the rating
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, index) => (
       <motion.span
         key={index}
-        whileHover={{ scale: 1.2 }} // Smooth animation on hover
+        whileHover={{ scale: 1.2 }}
         className={`text-2xl ${
           index < rating ? "text-yellow-500" : "text-gray-300"
         }`}
@@ -35,8 +34,6 @@ const Review: React.FC<ReviewProps> = ({
 
   return (
     <div className="p-4 ">
-      {/**border-b border-gray-300 dark:border-gray-600 */}
-      {/* User Info */}
       <div className="flex items-center mb-3">
         <img
           src={avatarUrl === "" ? defaultAvatar : avatarUrl}
@@ -46,13 +43,11 @@ const Review: React.FC<ReviewProps> = ({
         <div>
           <h3 className="text-lg font-semibold">{username}</h3>
           <p className="text-sm text-gray-500">
-            {format(new Date(createdAt), "PPP")} {/* Formats the date */}
+            {format(new Date(createdAt), "PPP")}
           </p>
         </div>
       </div>
-      {/* Rating */}
       <div className="flex items-center mb-3">{renderStars(rating)}</div>
-      {/* Comment */}
       <p className="text-base text-gray-800 dark:text-gray-200">{comment}</p>
     </div>
   );

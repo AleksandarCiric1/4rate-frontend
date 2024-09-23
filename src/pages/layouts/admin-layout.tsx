@@ -1,10 +1,9 @@
 import Navbar from "@/components/shared/navbar";
-import Sidebar from "../admin/components/sidebar";
-import BackButton from "../admin/components/back-button";
 import { ThemeProvider } from "@/components/shared/theme-provider";
-import { Outlet } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
-import { UserChartComponent } from "../admin/components/dashboard/user-chart";
+import { Outlet } from "react-router-dom";
+import BackButton from "../admin/components/back-button";
+import Sidebar from "../admin/components/sidebar";
 
 const AdminLayout = () => {
   return (

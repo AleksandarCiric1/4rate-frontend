@@ -1,15 +1,15 @@
+import { useUser } from "@/providers/user";
 import {
-  ChangePasswordSchema,
   ChangePasswordDefaultValues,
+  ChangePasswordSchema,
 } from "@/schemas/user-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { z as zod } from "zod";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import ChangePasswordUserForm from "../forms/change-password-form";
-import { getUserAccountId } from "@/services/user-service";
-import { error } from "console";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { userEndpoints } from "@/environments/api-endpoints";
 
 type ChangePasswordDialogProps = {
   onChange: (value: boolean) => void;
@@ -18,6 +18,7 @@ type ChangePasswordDialogProps = {
 };
 
 const ChangePasswordDialog = (props: ChangePasswordDialogProps) => {
+  const { user } = useUser();
   const changePasswordForm = useForm<zod.infer<typeof ChangePasswordSchema>>({
     resolver: zodResolver(ChangePasswordSchema),
     defaultValues: ChangePasswordDefaultValues,
@@ -27,18 +28,20 @@ const ChangePasswordDialog = (props: ChangePasswordDialogProps) => {
     formData: Zod.infer<typeof ChangePasswordSchema>
   ) => {
     let obj = {
-      userAccountId: getUserAccountId(),
+      userAccountId: user?.id,
       ...formData,
     };
     axios
-      .put("http://localhost:8080/v1/userAccounts/passwordChange", obj)
-      .then((response) => {
+      .put(userEndpoints.changePassword(), obj)
+      .then(() => {
         props.onChange(true);
       })
       .catch((error) => {
         console.log(error);
         props.onChange(false);
       });
+
+    changePasswordForm.reset();
   };
 
   return (

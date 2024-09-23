@@ -15,7 +15,6 @@ const DashboardCard = ({ title, count, icon }: DashboardCardProps) => {
           {title}
         </h3>
         <div className="flex gap-5 justify-center items-center">
-          {/* <Newspaper className="text-slate-500" size={72} /> */}
           {icon}
           <h3 className="text-5xl font-semibold text-slate-500 dark:text-slate-200">
             {count}

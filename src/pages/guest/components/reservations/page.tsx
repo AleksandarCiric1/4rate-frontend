@@ -1,11 +1,11 @@
+import { reservationEndpoints } from "@/environments/api-endpoints";
 import { toast } from "@/hooks/use-toast";
-import { ReservationStatus } from "@/types/reservation";
+import { useUser } from "@/providers/user";
 import { Reservation } from "@/types/restaurant";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import { useUser } from "@/providers/user";
 
 export default function UserReservationsPage() {
   const { user } = useUser();
@@ -14,10 +14,11 @@ export default function UserReservationsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!user || !user.id) return;
     const fetchData = async () => {
       try {
         const response = await axios.get<Reservation[]>(
-          `http://localhost:8080/v1/reservations/getAllGuestReservations/${user?.id}`
+          reservationEndpoints.getAllGuestReservations(user?.id)
         );
         setData(response.data);
       } catch (err) {
@@ -35,7 +36,7 @@ export default function UserReservationsPage() {
     path: string,
     action: string
   ) => {
-    let apiPath = `http://localhost:8080/v1/reservations/${path}/${reservationId}`;
+    let apiPath = reservationEndpoints.reservationActions(path, reservationId);
     axios
       .put(apiPath)
       .then((response) => {

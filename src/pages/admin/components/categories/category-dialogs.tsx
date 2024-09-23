@@ -1,25 +1,26 @@
 import { Button } from "@/components/ui/button";
 import {
-  DialogDescription,
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
-import { useEffect } from "react";
-import { z as zod } from "zod";
-import { Category } from "./columns";
-import axios from "axios";
-import { useForm } from "react-hook-form";
 import {
   DialogCategoryFormDefaultValues,
   DialogCategoryFormSchema,
 } from "@/schemas/category-schemas";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { CategoryEditFormData } from "@/types/category";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { Plus } from "lucide-react";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { z as zod } from "zod";
 import CategoryForm from "./category-forms";
+import { Category } from "./columns";
+import { categoryEndpoints } from "@/environments/api-endpoints";
 
 type CategoryCreateDialogProps = {
   onCreate: (newCategory: Category) => void;
@@ -46,7 +47,7 @@ const CategoryCreateDialog = (props: CategoryCreateDialogProps) => {
     formData: Zod.infer<typeof DialogCategoryFormSchema>
   ) => {
     axios
-      .post("http://localhost:8080/v1/categories/add", formData)
+      .post(categoryEndpoints.addCategory(), formData)
       .then((response) => {
         props.onCreate(response.data);
       })
@@ -100,8 +101,8 @@ const CategoryEditDialog = (props: CateogryEditDialogProps) => {
   ) => {
     props.category.name = formData.name;
     axios
-      .put("http://localhost:8080/v1/categories/edit", props.category)
-      .then((response) => {
+      .put(categoryEndpoints.editCategory(), props.category)
+      .then(() => {
         props.onEdit({ ...formData, categoryId: props.category.id });
       })
       .catch((error) => {

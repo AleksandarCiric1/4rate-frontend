@@ -23,6 +23,7 @@ interface ReservationData {
 
 type ReservationProps = {
   restaurantId: number;
+  isVisible?: boolean;
 };
 
 const chartConfig = {

@@ -1,8 +1,8 @@
+import { Restaurant } from "@/types/restaurant";
 import { Link } from "react-router-dom";
 import defaultImage from "../../assets/default-restaurant-image.jpg";
-import { useEffect } from "react";
-import { Restaurant } from "@/types/restaurant";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { imageEndpoints } from "@/environments/api-endpoints";
 
 interface RestaurantCardProps {
   onClick: (restaurantId: number) => void;
@@ -31,7 +31,10 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({
         <img
           src={
             restaurant && restaurant.images[0]
-              ? `http://localhost:8080/v1/images/getImage/${restaurant.id}/${restaurant.images[0].imageUrl}`
+              ? imageEndpoints.getRestaurantImage(
+                  restaurant.id,
+                  restaurant.images[0].imageUrl
+                )
               : defaultImage
           }
           alt={name}

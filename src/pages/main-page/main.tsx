@@ -1,6 +1,4 @@
 import RestaurantCard from "@/components/shared/restaurant-card";
-import { MainPageLayout } from "../layouts/main-page-layout";
-import { useEffect, useMemo, useState } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -9,10 +7,16 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Outlet, useNavigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
-import axios from "axios";
+import {
+  categoryEndpoints,
+  restaurantEndpoints,
+} from "@/environments/api-endpoints";
 import { Category, Restaurant } from "@/types/restaurant";
+import axios from "axios";
+import { useEffect, useMemo, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { MainPageLayout } from "../layouts/main-page-layout";
 
 const MainPage = () => {
   return (
@@ -30,12 +34,12 @@ const RestaurantsGrid = () => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]); // Modified to array for multiple selections
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/v1/restaurants/getAll")
+      .get(restaurantEndpoints.getAll())
       .then((response) => {
         setRestaurants(response.data);
       })
@@ -44,7 +48,7 @@ const RestaurantsGrid = () => {
       });
 
     axios
-      .get("http://localhost:8080/v1/categories/getAll")
+      .get(categoryEndpoints.getAll())
       .then((response) => {
         setCategories(response.data);
       })
@@ -56,10 +60,8 @@ const RestaurantsGrid = () => {
   const toggleCategory = (category: Category) => {
     setSelectedCategories((prevSelected) => {
       if (prevSelected.some((selected) => selected.id === category.id)) {
-        // If category is already selected, remove it
         return prevSelected.filter((selected) => selected.id !== category.id);
       } else {
-        // Otherwise, add the category to the list
         return [...prevSelected, category];
       }
     });

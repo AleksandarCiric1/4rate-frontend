@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import clsx from "clsx";
-import { Trash, Trash2, Upload } from "lucide-react";
+import { Trash2, Upload } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface FileUploadInputProps {
@@ -45,8 +45,7 @@ const FileUploadInput = ({
           "hover:bg-gray-100 cursor-pointer transition duration-200"
         )}
       >
-        {/** p-6 before */}
-        <Upload className=" text-gray-500" /> {/*potential style: w-10 h-10*/}
+        <Upload className=" text-gray-500" />
         <span className="mt-2 text-sm text-gray-600">
           {multiple ? "Upload files here" : "Upload file here"}
         </span>

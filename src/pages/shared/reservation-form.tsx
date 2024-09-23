@@ -1,26 +1,9 @@
-import * as React from "react";
-import { format, addDays, startOfDay } from "date-fns";
+import { addDays, format, startOfDay } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
+import * as React from "react";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { useForm } from "react-hook-form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { date, z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "@/hooks/use-toast";
 import {
   Form,
   FormControl,
@@ -30,16 +13,31 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useUser } from "@/providers/user";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { type } from "os";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { reservationEndpoints } from "@/environments/api-endpoints";
 
 const DatePickerDemo = () => {
   const [date, setDate] = React.useState<Date>();
 
-  // Get the current date and the maximum date allowed (6 days from now, inclusive)
-  const today = startOfDay(new Date()); // Ensure the time part is set to the start of the day
-  const maxDate = addDays(today, 6); // 6 days after today, which makes it a total of 7 days including today
+  const today = startOfDay(new Date());
+  const maxDate = addDays(today, 6);
 
   const handleTimeSloteChange = (value: string) => {
     console.log(value);
@@ -66,7 +64,6 @@ const DatePickerDemo = () => {
             selected={date}
             onSelect={setDate}
             initialFocus
-            // Disable dates outside of today and the next 6 days
             disabled={(day) => day < today || day > maxDate}
           />
         </PopoverContent>
@@ -147,7 +144,7 @@ export function MakeReservationForm({
   restaurantId,
 }: MakeReservationFormProps) {
   const today = startOfDay(new Date());
-  const maxDate = addDays(today, 6); // 6 days after today, which makes it a total of 7 days including today
+  const maxDate = addDays(today, 6);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -170,7 +167,7 @@ export function MakeReservationForm({
     };
 
     axios
-      .post("http://localhost:8080/v1/reservations/makeReservation", obj)
+      .post(reservationEndpoints.makeReservation(), obj)
       .then((response) => {
         toast({
           variant: "success",
@@ -226,7 +223,7 @@ export function MakeReservationForm({
                       mode="single"
                       selected={field.value}
                       onSelect={(date) => {
-                        field.onChange(date); // Update form state
+                        field.onChange(date);
                       }}
                       initialFocus
                       disabled={(day) => day < today || day > maxDate}

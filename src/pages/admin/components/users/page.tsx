@@ -4,6 +4,8 @@ import { DataTable } from "./data-table";
 import axios from "axios";
 import { User } from "@/types/user";
 import { AdminCreateDialog } from "./user-dialogs";
+import { adminEndpoints } from "@/environments/api-endpoints";
+import { BASE_URL } from "@/environments/env";
 
 export default function UsersTable() {
   const [isCreateAdminDialogOpen, setCreateAdminDialogOpen] =
@@ -16,7 +18,7 @@ export default function UsersTable() {
     const fetchData = async () => {
       try {
         const response = await axios.get<User[]>(
-          "http://localhost:8080/v1/admin/getAllAccounts"
+          adminEndpoints.getAllAccounts()
         );
         setData(response.data);
       } catch (err) {
@@ -34,7 +36,7 @@ export default function UsersTable() {
     path: string,
     action: string
   ) => {
-    const apiPath = `http://localhost:8080/v1${path}/${userAccountId}`;
+    const apiPath = `${BASE_URL}${path}/${userAccountId}`;
     axios
       .put(apiPath)
       .then((response) => {

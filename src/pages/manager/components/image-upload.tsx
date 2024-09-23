@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { FileUploadInput } from "@/components/shared/file-upload-input";
-import { useParams } from "react-router-dom";
-import axios from "axios";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { imageEndpoints } from "@/environments/api-endpoints";
 import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 const RestaurantImageUpload = () => {
   const { toast } = useToast();
@@ -21,19 +22,17 @@ const RestaurantImageUpload = () => {
       formData.append("files", file);
     }
 
+    if (!id) return;
     axios
-      .post(
-        `http://localhost:8080/v1/images/uploadRestaurantImages/${id}`,
-        formData
-      )
-      .then((response) => {
+      .post(imageEndpoints.uploadRestaurantImages(id), formData)
+      .then(() => {
         toast({
           variant: "default",
           title: "Images Upload",
           description: "Images uploaded successfully! Return to restaurant.",
         });
       })
-      .catch((error) => {
+      .catch(() => {
         toast({
           variant: "destructive",
           title: "Images Upload",

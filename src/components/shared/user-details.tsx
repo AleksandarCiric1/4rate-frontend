@@ -1,51 +1,41 @@
 import { Button } from "@/components/ui/button";
-import defaultAvatar from "../../assets/default_avatar.png";
-import { useEffect, useState } from "react";
-import { EditUserDialog } from "../dialogs/eidt-user-dialog";
-import { User, UserProfileData } from "@/types/user";
-import axios from "axios";
-import { getUserAccountId } from "@/services/user-service";
-import { ChangePasswordDialog } from "../dialogs/change-password-dialog";
+import { adminEndpoints, imageEndpoints } from "@/environments/api-endpoints";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/providers/user";
-
-const initialUserData = {
-  username: "john_doe",
-  firstName: "John",
-  lastName: "Doe",
-  email: "john@example.com",
-  dateOfBirth: "1990-01-01",
-  avatarUrl: "https://via.placeholder.com/100",
-};
+import { User } from "@/types/user";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import defaultAvatar from "../../assets/default_avatar.png";
+import { ChangePasswordDialog } from "../dialogs/change-password-dialog";
+import { EditUserDialog } from "../dialogs/eidt-user-dialog";
 
 const UserProfile = () => {
   const { toast } = useToast();
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const [userProfile, setUserProfile] = useState<User | null>(null);
   const [isEditUsernDialogOpen, setIsEditUserDialogOpen] =
     useState<boolean>(false);
-  const [userData, setUserData] = useState<UserProfileData | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState(userData);
   const [isPassChangingDialogOpen, setIsPassChangingDialogOpen] =
     useState(false);
-  const [newAvatar, setNewAvatar] = useState<File | null>(null);
   const [avatar, setAvatar] = useState<string | null>(null);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:8080/v1/admin/getUser/${user?.id}`)
-      .then((response) => {
+    if (user?.id) {
+      axios.get(adminEndpoints.getUser(user?.id)).then((response) => {
         setUserProfile(response.data);
       });
+    } else {
+      console.log("User ID is undefined");
+    }
   }, []);
 
   useEffect(() => {
     const updateAvatar = async () => {
       setAvatar(null);
 
+      if (!user || !user.id) return;
       setTimeout(() => {
-        setAvatar(`http://localhost:8080/v1/images/getAvatar/${user?.id}`);
+        setAvatar(imageEndpoints.getAvatarByUserId(user?.id));
       }, 1);
 
       setTimeout(() => {
@@ -66,18 +56,8 @@ const UserProfile = () => {
     setIsEditUserDialogOpen(true);
   };
 
-  const handleSave = () => {
-    setUserData(editData);
-    setIsEditing(false);
-  };
-
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setNewAvatar(e.target.files[0]);
-    }
-  };
-
   const handleEditUser = (editedUser: User) => {
+    setUser(editedUser);
     setUserProfile(editedUser);
     setIsEditUserDialogOpen(false);
   };
@@ -105,18 +85,13 @@ const UserProfile = () => {
 
   const formatDate = (isoString: string) => {
     const date = new Date(isoString);
-    return date.toISOString().split("T")[0]; // Format to YYYY-MM-DD
+    return date.toISOString().split("T")[0];
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-8 p-6 bg-white dark:bg-gray-800 shadow-lg rounded-lg">
+    <div className="max-w-lg mx-auto mt-8 mb-8 p-6 bg-white dark:bg-gray-800 shadow-lg rounded-lg">
       <div className="flex items-center space-x-6">
         <img
-          // src={
-          //   user?.avatarUrl !== "" ? avatar : defaultAvatar
-          //   // ? `http://localhost:8080/v1/images/getAvatar/${user?.id}`
-          //   // : defaultAvatar
-          // }
           src={avatar !== null ? avatar : defaultAvatar}
           alt="User Avatar"
           className="w-24 h-24 rounded-full border dark:border-gray-600"

@@ -1,9 +1,10 @@
+import { requestForRestaurantsEndpoints } from "@/environments/api-endpoints";
+import { useToast } from "@/hooks/use-toast";
 import { RestaurantRequest } from "@/types/restaurant";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { DataTable } from "./data-table";
 import { columns } from "./columns";
-import { useToast } from "@/hooks/use-toast";
+import { DataTable } from "./data-table";
 
 export default function RestaurantRequestsTable() {
   const { toast } = useToast();
@@ -15,7 +16,7 @@ export default function RestaurantRequestsTable() {
     const fetchData = async () => {
       try {
         const response = await axios.get<RestaurantRequest[]>(
-          "http://localhost:8080/v1/requestForRestaurants/getAllRequests"
+          requestForRestaurantsEndpoints.getAllRequests()
         );
         setData(response.data);
       } catch (err: any) {
@@ -43,9 +44,7 @@ export default function RestaurantRequestsTable() {
           };
 
     axios
-      .put(
-        `http://localhost:8080/v1/requestForRestaurants/${endpoint}/${requestId}`
-      )
+      .put(requestForRestaurantsEndpoints.requestActions(endpoint, requestId))
       .then(() => {
         toast({
           variant: "default",
@@ -62,47 +61,6 @@ export default function RestaurantRequestsTable() {
       .catch((error) => {
         console.log(error);
       });
-    // if (action === "approve") {
-    //   axios
-    //     .post(
-    //       `http://localhost:8080/v1/requestForRestaurants/approveRequest/${requestId}`
-    //     )
-    //     .then(() => {
-    //       toast({
-    //         variant: "default",
-    //         title: "Request successfully approved!",
-    //         description: "Restaurant can be used now.",
-    //       });
-    //       setData((prevData) => {
-    //         return (
-    //           prevData?.filter((request) => request.id !== requestId) || null
-    //         );
-    //       });
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // } else {
-    //   axios
-    //     .post(
-    //       `http://localhost:8080/v1/requestForRestaurants/denyRequest/${requestId}`
-    //     )
-    //     .then(() => {
-    //       toast({
-    //         variant: "default",
-    //         title: "Request successfully denied!",
-    //         description: "Restaurant can't be used now.",
-    //       });
-    //       setData((prevData) => {
-    //         return (
-    //           prevData?.filter((request) => request.id !== requestId) || null
-    //         );
-    //       });
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // }
   };
 
   if (loading) return <p>Loading...</p>;

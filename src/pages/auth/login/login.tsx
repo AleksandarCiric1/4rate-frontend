@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import AuthLayout from "../components/auth-layout";
+import { userEndpoints } from "@/environments/api-endpoints";
 
 export const LoginForm = () => {
   const { setIsLogged, setUser } = useUser();
@@ -40,7 +41,7 @@ export const LoginForm = () => {
     setIsLoading(true);
 
     axios
-      .post("http://localhost:8080/v1/userAccounts/login", values)
+      .post(userEndpoints.login(), values)
       .then((response) => {
         console.log(response);
         setTimeout(() => {

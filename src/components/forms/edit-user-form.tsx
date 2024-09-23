@@ -35,34 +35,6 @@ export default function EditUserForm(props: EditUserFormProps) {
         <div className="flex flex-col gap-1">
           <FormField
             control={props.form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter username" {...field}></Input>
-                </FormControl>
-                <FormDescription />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={props.form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter email" {...field}></Input>
-                </FormControl>
-                <FormDescription />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={props.form.control}
             name="firstName"
             render={({ field }) => (
               <FormItem>

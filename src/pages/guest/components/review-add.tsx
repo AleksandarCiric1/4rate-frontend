@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion"; // for smooth animations
 import { Button } from "@/components/ui/button";
-import axios from "axios";
-import { useParams } from "react-router-dom";
-import { useUser } from "@/providers/user";
+import { reviewEndpoints } from "@/environments/api-endpoints";
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/providers/user";
+import axios from "axios";
+import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 
 const AddReview: React.FC = () => {
   const { toast } = useToast();
@@ -41,9 +42,11 @@ const AddReview: React.FC = () => {
 
     setError("");
 
+    if (!restaurantId) return;
+
     let obj = { grade: rating, comment: reviewText, userAccountId: user?.id };
     axios
-      .post(`http://localhost:8080/v1/reviews/add/${restaurantId}`, obj)
+      .post(reviewEndpoints.add(restaurantId), obj)
       .then(() => {
         toast({
           variant: "default",
@@ -66,7 +69,6 @@ const AddReview: React.FC = () => {
     <div className="p-6 max-w-xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Write a Review</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Star Rating */}
         <div>
           <label className="block text-lg font-semibold mb-2">
             Your Rating
@@ -77,7 +79,7 @@ const AddReview: React.FC = () => {
                 <motion.button
                   type="button"
                   key={star}
-                  whileHover={{ scale: 1.2 }} // Hover effect
+                  whileHover={{ scale: 1.2 }}
                   className={`text-3xl transition duration-300 ${
                     (hoverRating || rating) >= star
                       ? "text-yellow-500"
@@ -91,14 +93,12 @@ const AddReview: React.FC = () => {
                 </motion.button>
               ))}
             </div>
-            {/* Show description based on selected rating */}
             <p className="mt-2 text-sm font-semibold">
               {ratingDescriptions[hoverRating ?? rating]}
             </p>
           </div>
         </div>
 
-        {/* Review Text */}
         <div>
           <label className="block text-lg font-semibold mb-2">
             Your Comment
@@ -112,10 +112,8 @@ const AddReview: React.FC = () => {
           ></textarea>
         </div>
 
-        {/* Error message */}
         {error && <p className="text-red-500">{error}</p>}
 
-        {/* Submit Button */}
         <Button
           type="submit"
           className="bg-slate-600 text-white px-4 py-2 rounded-md hover:bg-slate-700 dark:hover:bg-slate-500"

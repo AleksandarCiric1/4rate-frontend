@@ -1,7 +1,4 @@
-import { User } from "@/types/user";
-import { z as zod } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,14 +7,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import AdminCreateForm from "./user-forms";
 import {
   AdminCreateDefaultValues,
   AdminCreateSchema,
 } from "@/schemas/user-schemas";
+import { User } from "@/types/user";
+import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { Plus } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z as zod } from "zod";
+import AdminCreateForm from "./user-forms";
+import { adminEndpoints } from "@/environments/api-endpoints";
 
 type AdminCreateDialogProps = {
   onCreate: (user: User) => void;
@@ -35,7 +36,7 @@ const AdminCreateDialog = (props: AdminCreateDialogProps) => {
     formData: Zod.infer<typeof AdminCreateSchema>
   ) => {
     axios
-      .post("http://localhost:8080/v1/admin/createAdminAccount", formData)
+      .post(adminEndpoints.createAdminAccount(), formData)
       .then((response) => {
         props.onCreate(response.data);
       });

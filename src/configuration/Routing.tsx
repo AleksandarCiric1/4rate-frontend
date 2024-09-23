@@ -1,31 +1,28 @@
+import { About } from "@/components/shared/about";
 import UserProfile from "@/components/shared/user-details";
 import Admin from "@/pages/admin/admin";
 import CategoriesTable from "@/pages/admin/components/categories/page";
+import Dashboard from "@/pages/admin/components/dashboard/dashboard";
 import RestaurantRequestsTable from "@/pages/admin/components/restaurant-requests/page";
 import RestaurantsTable from "@/pages/admin/components/restaurants/page";
 import UsersTable from "@/pages/admin/components/users/page";
 import { LoginForm } from "@/pages/auth/login/login";
 import { RegisterForm } from "@/pages/auth/register/register";
 import { NotFoundPage } from "@/pages/errors/not-found";
+import UserReservationsPage from "@/pages/guest/components/reservations/page";
+import AddReview from "@/pages/guest/components/review-add";
+import GuestDashboard from "@/pages/guest/guest";
 import { DefaultLayout } from "@/pages/layouts/default-layout";
-import { FileUpload } from "@/practice/style-file-upload";
-import { FileExport } from "@/practice/test-file";
-import { createBrowserRouter } from "react-router-dom";
-import AdminRoute from "./admin-route";
 import { MainPage, RestaurantsGrid } from "@/pages/main-page/main";
-import { About } from "@/components/shared/about";
-import ManagerDashboard from "@/pages/manager/manager";
-import RestaurantPage from "@/pages/manager/components/restaurant-page";
 import EditRestaurantPage from "@/pages/manager/components/edit-restaurant-form";
 import RestaurantImageUpload from "@/pages/manager/components/image-upload";
-import GuestDashboard from "@/pages/guest/guest";
-import { RestaurantDetailsPage } from "@/pages/shared/restaurant-details";
-import AddReview from "@/pages/guest/components/review-add";
-import Dashboard from "@/pages/admin/components/dashboard/dashboard";
 import ReservationsPage from "@/pages/manager/components/reservations/page";
-import { NotificationPage } from "@/practice/notification-practice";
-import Practice from "@/practice/practice-form";
-import UserReservationsPage from "@/pages/guest/components/reservations/page";
+import RestaurantPage from "@/pages/manager/components/restaurant-page";
+import ManagerDashboard from "@/pages/manager/manager";
+import { RestaurantDetailsPage } from "@/pages/shared/restaurant-details";
+import { NotificationPage } from "@/pages/shared/notification-practice";
+import { createBrowserRouter } from "react-router-dom";
+import AdminRoute from "./admin-route";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -92,6 +89,7 @@ const router = createBrowserRouter([
               },
             ],
           },
+          { path: "profile", element: <UserProfile /> },
         ],
       },
       {
@@ -111,13 +109,10 @@ const router = createBrowserRouter([
           { path: "restaurants", element: <RestaurantsTable /> },
           { path: "resturant-requests", element: <RestaurantRequestsTable /> },
           { path: "profile", element: <UserProfile /> },
+          { path: "profile", element: <UserProfile /> },
         ],
       },
     ],
-  },
-  {
-    path: "practice",
-    element: <Practice />,
   },
   {
     path: "login",
@@ -126,18 +121,6 @@ const router = createBrowserRouter([
   {
     path: "register",
     element: <RegisterForm />,
-  },
-  {
-    path: "file-export",
-    element: <FileExport />,
-  },
-  {
-    path: "file-upload",
-    element: <FileUpload />,
-  },
-  {
-    path: "profile",
-    element: <UserProfile />,
   },
 ]);
 

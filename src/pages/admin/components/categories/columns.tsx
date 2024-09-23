@@ -2,6 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { MoreHorizontal } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,7 +11,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
 
 interface ColumnProps {
   onAction: (id: number, action: string) => void;

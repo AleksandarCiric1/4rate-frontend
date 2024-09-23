@@ -2,6 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { MoreHorizontal } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,9 +11,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
-import { Reservation } from "@/types/restaurant";
 import { ReservationStatus } from "@/types/reservation";
+import { Reservation } from "@/types/restaurant";
 
 interface ColumnProps {
   onAction: (reservationId: number, path: string, action: string) => void;

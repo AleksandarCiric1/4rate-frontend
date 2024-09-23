@@ -12,6 +12,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { analyticEndpoints } from "@/environments/api-endpoints";
 import { RestaurantChartData, RestaurantsPerMonth } from "@/types/restaurant";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -36,7 +37,7 @@ export function RestaurantChartComponent() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/v1/analytics/restaurant-stats"
+          analyticEndpoints.getRestaurantStats()
         );
         const data = response.data;
         const transformedData = transformData(data);

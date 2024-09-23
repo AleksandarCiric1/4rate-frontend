@@ -1,3 +1,5 @@
+/** CUSTOM MULTI SELECT COMPONENT FROM https://github.com/sersavan/shadcn-multi-select-component */
+
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import {

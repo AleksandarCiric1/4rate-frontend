@@ -18,7 +18,6 @@ const RegisterSchema = z
         /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/,
         "Password must contain at least one letter, number and special character"
       ),
-    // role: z.string({ required_error: "Please select role" }),
     role: z.enum(["manager", "guest"], {
       required_error: "Please select a role",
     }),

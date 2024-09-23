@@ -11,23 +11,23 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { z } from "zod";
-import { useEffect, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   RegisterDefaultValues,
   RegisterSchema,
 } from "@/schemas/register-schema";
-import {
-  SelectItem,
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
 import AuthLayout from "../components/auth-layout";
 
 export const RegisterForm = () => {
@@ -44,7 +44,6 @@ export const RegisterForm = () => {
   });
 
   const { formState } = form;
-  const isValid = formState.isValid;
 
   function onSubmit(values: z.infer<typeof RegisterSchema>) {
     console.log(values);

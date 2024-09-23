@@ -12,6 +12,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { analyticEndpoints } from "@/environments/api-endpoints";
 import { UsersChartData, UsersPerMonth } from "@/types/user";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -35,9 +36,7 @@ export function UserChartComponent() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8080/v1/analytics/user-stats"
-        );
+        const response = await axios.get(analyticEndpoints.getUserStats());
         const data = response.data;
         const transformedData = transformData(data);
         setChartData(transformedData);

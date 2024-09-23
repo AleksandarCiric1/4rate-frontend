@@ -1,9 +1,10 @@
+import { CategoryEditFormData } from "@/types/category";
+import axios from "axios";
 import { useEffect, useState } from "react";
+import { CategoryCreateDialog, CategoryEditDialog } from "./category-dialogs";
 import { Category, columns } from "./columns";
 import { DataTable } from "./data-table";
-import axios from "axios";
-import { CategoryCreateDialog, CategoryEditDialog } from "./category-dialogs";
-import { CategoryEditFormData } from "@/types/category";
+import { categoryEndpoints } from "@/environments/api-endpoints";
 
 export default function CategoriesTable() {
   const [isEditDialogOpen, setEditDialogOpen] = useState<boolean>(false);
@@ -17,7 +18,7 @@ export default function CategoriesTable() {
     const fetchData = async () => {
       try {
         const response = await axios.get<Category[]>(
-          "http://localhost:8080/v1/categories/getAll"
+          categoryEndpoints.getAll()
         );
         setData(response.data);
       } catch (err) {
@@ -31,7 +32,7 @@ export default function CategoriesTable() {
   }, []);
 
   const handleActions = (id: number, action: string) => {
-    let apiPath = `http://localhost:8080/v1/categories/${action}/${id}`;
+    let apiPath = categoryEndpoints.categoryActions(id, action);
     axios
       .put(apiPath)
       .then((response) => {

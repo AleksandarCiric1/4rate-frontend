@@ -34,16 +34,12 @@ const AdminCreateDefaultValues = {
 };
 
 const EditUserSchema = z.object({
-  email: z.string().email("Email should be valid"),
-  username: z.string().min(3, "Username must have at least 3 characters"),
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   dateOfBirth: z.date().optional(),
 });
 
 const EditUserDefaultValues = {
-  username: "",
-  email: "",
   firstName: "",
   lastName: "",
   dateOfBirth: "null",
@@ -85,10 +81,10 @@ const ChangePasswordDefaultValues = {
 };
 
 export {
-  AdminCreateSchema,
   AdminCreateDefaultValues,
-  EditUserSchema,
-  EditUserDefaultValues,
-  ChangePasswordSchema,
+  AdminCreateSchema,
   ChangePasswordDefaultValues,
+  ChangePasswordSchema,
+  EditUserDefaultValues,
+  EditUserSchema,
 };

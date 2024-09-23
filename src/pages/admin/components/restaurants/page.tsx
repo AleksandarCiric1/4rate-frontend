@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import { DataTable } from "./data-table";
-import axios from "axios";
-import { columns, Restaurant } from "./columns";
+import { restaurantEndpoints } from "@/environments/api-endpoints";
 import { RestaurantBlockFormData } from "@/types/restaurant";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { columns, Restaurant } from "./columns";
+import { DataTable } from "./data-table";
 import { RestaurantBlockDialog } from "./restaurant-dialogs";
 
 export default function RestaurantsTable() {
@@ -18,7 +19,7 @@ export default function RestaurantsTable() {
     const fetchData = async () => {
       try {
         const response = await axios.get<Restaurant[]>(
-          "http://localhost:8080/v1/restaurants/getAll"
+          restaurantEndpoints.getAll()
         );
         setData(response.data);
       } catch (err: any) {
@@ -40,7 +41,7 @@ export default function RestaurantsTable() {
   const handleRestaurantBlock = (formData: RestaurantBlockFormData) => {
     let obj = { description: formData.description, id: formData.restaurantId };
     axios
-      .put("http://localhost:8080/v1/restaurants/block", obj)
+      .put(restaurantEndpoints.block(), obj)
       .then(() => {
         setData(
           (prevData) =>

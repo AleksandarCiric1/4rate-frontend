@@ -1,13 +1,17 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { Category, Restaurant } from "@/types/restaurant";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Plus, X } from "lucide-react";
-import axios from "axios";
 import { MultiSelect } from "@/components/shared/multi-select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  categoryEndpoints,
+  restaurantEndpoints,
+} from "@/environments/api-endpoints";
+import { Category, Restaurant } from "@/types/restaurant";
+import axios from "axios";
+import { Plus, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const EditRestaurantPage = () => {
   const navigation = useNavigate();
@@ -17,11 +21,10 @@ const EditRestaurantPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!id) return;
     const fetchRestaurant = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8080/v1/restaurants/getRestaurantById/${id}`
-        );
+        const response = await fetch(restaurantEndpoints.getRestaurantById(id));
         const data = await response.json();
         setRestaurant(data);
         setLoading(false);
@@ -34,7 +37,7 @@ const EditRestaurantPage = () => {
     fetchRestaurant();
 
     axios
-      .get("http://localhost:8080/v1/categories/getAll")
+      .get(categoryEndpoints.getAll())
       .then((response) => {
         setCategories(response.data);
       })
@@ -77,7 +80,6 @@ const EditRestaurantPage = () => {
     }
   }, [restaurant]);
 
-  // handle form validation
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const workTimeRegex =
     /^([01]?[0-9]|2[0-3]):[0-5][0-9]\s*-\s*([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
@@ -95,11 +97,11 @@ const EditRestaurantPage = () => {
       errors.workTime = "Work time must be in the format HH:MM - HH:MM.";
     }
 
-    if (!formState.address.trim()) {
+    if (!formState.city || !formState.address.trim()) {
       errors.address = "Address is required.";
     }
 
-    if (!formState.city.trim()) {
+    if (!formState.address || !formState.city.trim()) {
       errors.city = "City is required.";
     }
 
@@ -109,7 +111,6 @@ const EditRestaurantPage = () => {
 
     return errors;
   };
-  // end of form validation
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -167,7 +168,7 @@ const EditRestaurantPage = () => {
       categoryIds: formState.selectedCategories,
     };
     axios
-      .put(`http://localhost:8080/v1/restaurants/updateRestaurant`, obj)
+      .put(restaurantEndpoints.updateRestaurant(), obj)
       .then(() => {
         navigation("/manager");
       })
@@ -179,11 +180,11 @@ const EditRestaurantPage = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>; // Loading state while fetching data
+    return <div>Loading...</div>;
   }
 
   if (!restaurant) {
-    return <div>Error: Restaurant not found!</div>; // Error state if data fails
+    return <div>Error: Restaurant not found!</div>;
   }
 
   return (

@@ -1,9 +1,13 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
+import {
+  managerEndpoints,
+  requestForRestaurantsEndpoints,
+} from "@/environments/api-endpoints";
+import { RestaurantDetailsPage } from "@/pages/shared/restaurant-details";
 import { useUser } from "@/providers/user";
 import { ManagerActions } from "@/types/manager";
-import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
-import { RestaurantDetailsPage } from "@/pages/shared/restaurant-details";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const RestaurantPage = () => {
   const { user } = useUser();
@@ -11,24 +15,20 @@ const RestaurantPage = () => {
     name: "",
     description: "",
     workTime: "",
-    capacity: "", // Initialize capacity as an empty string to avoid default 0
+    capacity: "",
   });
   const [managerActions, setManagerActions] = useState<ManagerActions | null>(
     null
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [workTimeError, setWorkTimeError] = useState("");
-  const [restaurantApproved, setRestaurantApproved] = useState(true);
-
-  // Validate the work time format with a regular expression
   const workTimeRegex =
     /^([01]?[0-9]|2[0-3]):[0-5][0-9]\s*-\s*([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
 
   useEffect(() => {
     if (user?.id) {
       axios
-        .get(`http://localhost:8080/v1/manager/restaurant-status/${user.id}`)
+        .get(managerEndpoints.restaurantStatus(user.id))
         .then((response) => {
           if (response.status === 200) {
             setManagerActions(ManagerActions.ACTIVE);
@@ -56,14 +56,13 @@ const RestaurantPage = () => {
 
     setRestaurantDetails((prevDetails) => ({
       ...prevDetails,
-      [name]: name === "capacity" ? value : value, // Keep capacity as string until submission
+      [name]: name === "capacity" ? value : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validation: Ensure all fields are filled
     if (
       !restaurantDetails.name ||
       !restaurantDetails.description ||
@@ -74,7 +73,6 @@ const RestaurantPage = () => {
       return;
     }
 
-    // Validate work time format
     if (!workTimeRegex.test(restaurantDetails.workTime)) {
       setError(
         "Invalid work time format. Use HH:MM - HH:MM (e.g., 9:00 - 22:00)"
@@ -82,7 +80,6 @@ const RestaurantPage = () => {
       return;
     }
 
-    // Ensure capacity is a valid number
     const capacityNumber = Number(restaurantDetails.capacity);
     if (isNaN(capacityNumber) || capacityNumber <= 0) {
       setError("Please enter a valid capacity number");
@@ -92,12 +89,13 @@ const RestaurantPage = () => {
     setLoading(true);
     setError("");
 
+    if (!user || !user.id) return;
     axios
-      .post(
-        `http://localhost:8080/v1/requestForRestaurants/createRequest/${user?.id}`,
-        { ...restaurantDetails, capacity: capacityNumber } // Submit capacity as number
-      )
-      .then((response) => {
+      .post(requestForRestaurantsEndpoints.createRequest(user?.id), {
+        ...restaurantDetails,
+        capacity: capacityNumber,
+      })
+      .then(() => {
         setTimeout(() => {}, 2000);
         setManagerActions(ManagerActions.PENDING);
       })
@@ -148,7 +146,7 @@ const RestaurantPage = () => {
             <div>
               <label className="block text-gray-700">Capacity</label>
               <input
-                type="text" // Keep it as text to prevent default value '0'
+                type="text"
                 name="capacity"
                 value={restaurantDetails.capacity}
                 onChange={handleInputChange}

@@ -1,3 +1,5 @@
+import MenuButton from "@/components/shared/menu-button";
+import { Button } from "@/components/ui/button";
 import {
   Carousel,
   CarouselContent,
@@ -5,18 +7,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { useUser } from "@/providers/user";
-import { Restaurant } from "@/types/restaurant";
-import MenuButton from "@/components/shared/menu-button";
-import { ArrowRightFromLine, Camera, FilePenLine, Star } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
-import { isWithinInterval, parse } from "date-fns";
-import MonthlyReportForm from "../guest/components/monthly-report";
-import { Report } from "@/types/report";
-import Review from "./review";
 import {
   Pagination,
   PaginationContent,
@@ -25,8 +15,23 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  imageEndpoints,
+  managerEndpoints,
+  restaurantEndpoints,
+} from "@/environments/api-endpoints";
 import { MakeReservationForm } from "@/pages/shared/reservation-form";
+import { useUser } from "@/providers/user";
+import { Report } from "@/types/report";
+import { Restaurant } from "@/types/restaurant";
+import axios from "axios";
+import { isWithinInterval, parse } from "date-fns";
+import { ArrowRightFromLine, Camera, FilePenLine, Star } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import MonthlyReportForm from "../guest/components/monthly-report";
 import { ReservationChartComponent } from "../manager/components/reservations/reservation-chart";
+import Review from "./review";
 
 const REVIEWS_PER_PAGE = 5;
 
@@ -51,10 +56,14 @@ export function RestaurantDetailsPage() {
   };
 
   useEffect(() => {
-    let path =
-      user?.role === "manager" && restaurantId === undefined
-        ? `http://localhost:8080/v1/restaurants/getRestaurant/${user?.id}`
-        : `http://localhost:8080/v1/restaurants/getRestaurantById/${restaurantId}`;
+    let path = "";
+    if (restaurantId)
+      path = restaurantEndpoints.getRestaurantById(restaurantId);
+    else if (user) {
+      path = restaurantEndpoints.getRestaurantByUserId(user?.id);
+    } else {
+      return;
+    }
 
     axios
       .get(path)
@@ -70,12 +79,10 @@ export function RestaurantDetailsPage() {
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Calculate total pages
   const totalPages = Math.ceil(
     (restaurant?.reviews.length || 0) / REVIEWS_PER_PAGE
   );
 
-  // Get the reviews for the current page
   const currentReviews = restaurant?.reviews.slice(
     (currentPage - 1) * REVIEWS_PER_PAGE,
     currentPage * REVIEWS_PER_PAGE
@@ -103,27 +110,24 @@ export function RestaurantDetailsPage() {
   };
 
   const downloadPdf = async (report: Report) => {
+    if (!restaurant || !restaurant.id) return;
     try {
-      // Make a request to the backend to get the PDF
       const response = await axios.post(
-        `http://localhost:8080/v1/reports/pdf/${restaurant?.id}`,
+        managerEndpoints.pdf(restaurant?.id),
         report,
         {
           responseType: "blob",
         }
       );
 
-      // Create a Blob from the PDF response
       const blob = new Blob([response.data], { type: "application/pdf" });
 
-      // Create a link element, set the download attribute, and trigger the download
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `Activities_${user?.id}.pdf`; // Name of the downloaded file
+      link.download = `Activities_${user?.id}.pdf`;
       document.body.appendChild(link);
       link.click();
 
-      // Clean up and remove the link after triggering the download
       link.parentNode?.removeChild(link);
     } catch (error) {
       console.error("Failed to download PDF", error);
@@ -148,7 +152,10 @@ export function RestaurantDetailsPage() {
                 <CarouselItem key={index} className="h-full">
                   {image.imageUrl !== null && (
                     <img
-                      src={`http://localhost:8080/v1/images/getImage/${restaurant.id}/${image.imageUrl}`}
+                      src={imageEndpoints.getRestaurantImage(
+                        restaurant.id,
+                        image.imageUrl
+                      )}
                       alt="restaurant image"
                       className="w-full h-full object-cover"
                     />
@@ -185,18 +192,18 @@ export function RestaurantDetailsPage() {
           <p className="text-lg mb-2">Rating: ⭐️⭐️⭐️⭐️⭐️ (4.5)</p>
           <p className="text-lg">Work Time: {restaurant?.workTime}</p>
 
-          {user?.role === "manager" && (
-            <Button
-              onClick={handleEditClick}
-              className="mt-4 bg-white text-black hover:bg-slate-300"
-            >
-              <FilePenLine className="mr-2" /> <span>Edit Restaurant </span>
-            </Button>
-          )}
+          {user?.role === "manager" &&
+            user.manager.restaurantId === restaurant?.id && (
+              <Button
+                onClick={handleEditClick}
+                className="mt-4 bg-white text-black hover:bg-slate-300"
+              >
+                <FilePenLine className="mr-2" /> <span>Edit Restaurant </span>
+              </Button>
+            )}
         </div>
       </div>
       <div className="w-full flex flex-col lg:flex-row justify-start p-2">
-        {/* Left Side: Restaurant Management */}
         <div className="w-full lg:w-2/3 p-10 mt-10">
           {user?.role === "manager" && (
             <div>
@@ -218,7 +225,6 @@ export function RestaurantDetailsPage() {
 
           <hr className="my-7" />
 
-          {/* Restaurant Menu */}
           <div className="w-[150px]">
             <h2 className="text-2xl font-bold pb-8">Menu</h2>
             <MenuButton
@@ -229,7 +235,6 @@ export function RestaurantDetailsPage() {
 
           <hr className="my-7" />
 
-          {/* Restaurant Information */}
           <h2 className="text-3xl font-bold mb-4">
             Restaurant Basic Information
           </h2>
@@ -299,7 +304,9 @@ export function RestaurantDetailsPage() {
                     key={index}
                     avatarUrl={
                       review.guest.userAccount.avatarUrl
-                        ? `http://localhost:8080/v1/images/getAvatar/${review.guest.userAccount.id}`
+                        ? imageEndpoints.getAvatarByUserId(
+                            review.guest.userAccount.id
+                          )
                         : ""
                     }
                     username={review.guest.userAccount.username}
@@ -309,7 +316,6 @@ export function RestaurantDetailsPage() {
                   />
                 ))}
 
-              {/* Pagination Controls */}
               <div className="flex justify-start mt-8">
                 <Pagination className="justify-start">
                   <PaginationContent>
@@ -372,16 +378,20 @@ export function RestaurantDetailsPage() {
               <p>{restaurant?.description}</p>
             </div>
 
-            <hr className="my-7" />
-
-            <div>
-              <div className="text-2xl font-bold mb-4">Analytics</div>
-              {restaurant && (
+            {user?.role === "manager" &&
+              user.manager.restaurantId === restaurant?.id && (
                 <div>
-                  <ReservationChartComponent restaurantId={restaurant?.id} />
+                  <hr className="my-7" />
+                  <div>
+                    <div className="text-2xl font-bold mb-4">Analytics</div>
+                    {restaurant && (
+                      <ReservationChartComponent
+                        restaurantId={restaurant?.id}
+                      />
+                    )}
+                  </div>
                 </div>
               )}
-            </div>
 
             <hr className="my-7" />
 
@@ -389,21 +399,23 @@ export function RestaurantDetailsPage() {
               <MonthlyReportForm onSubmit={handleMonthlyReportFormSubmit} />
             )}
 
-            {user?.role === "manager" && (
-              <div>
-                <h3 className="text-2xl font-bold mb-4">Edit Restaurant</h3>
-                <Button onClick={handleEditClick}>
-                  <FilePenLine className="mr-2" /> <span>Edit Restaurant </span>
-                </Button>
-                <Button onClick={handleAddImageClick} className="ml-4">
-                  <Camera className="mr-2" /> <span>Add images</span>
-                </Button>
-                <Button onClick={handleGetReporteClick} className="ml-4">
-                  <ArrowRightFromLine className="mr-2" />{" "}
-                  <span> Get monthly report</span>
-                </Button>
-              </div>
-            )}
+            {user?.role === "manager" &&
+              user.manager.restaurantId === restaurant?.id && (
+                <div>
+                  <h3 className="text-2xl font-bold mb-4">Edit Restaurant</h3>
+                  <Button onClick={handleEditClick}>
+                    <FilePenLine className="mr-2" />{" "}
+                    <span>Edit Restaurant </span>
+                  </Button>
+                  <Button onClick={handleAddImageClick} className="ml-4">
+                    <Camera className="mr-2" /> <span>Add images</span>
+                  </Button>
+                  <Button onClick={handleGetReporteClick} className="ml-4">
+                    <ArrowRightFromLine className="mr-2" />{" "}
+                    <span> Get monthly report</span>
+                  </Button>
+                </div>
+              )}
           </div>
         </div>
 
