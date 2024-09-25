@@ -9,7 +9,6 @@ createRoot(document.getElementById("root")!).render(
   <NotificationProvider>
     <UserProvider>
       <App />
-
       <Toaster />
     </UserProvider>
   </NotificationProvider>
