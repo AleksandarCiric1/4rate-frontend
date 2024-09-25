@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { DialogCategoryFormSchema } from "@/schemas/category-schemas";
 import { UseFormReturn } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 type CategoryFormProps = {
   form: UseFormReturn<Zod.infer<typeof DialogCategoryFormSchema>>;
@@ -20,6 +21,7 @@ type CategoryFormProps = {
 };
 
 export default function CategoryForm(props: CategoryFormProps) {
+  const { t } = useTranslation();
   return (
     <Form {...props.form}>
       <form onSubmit={props.form.handleSubmit(props.onFormSubmit)}>
@@ -29,9 +31,9 @@ export default function CategoryForm(props: CategoryFormProps) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>{t("Name")}</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter name" {...field}></Input>
+                  <Input placeholder={t("Enter_name")} {...field}></Input>
                 </FormControl>
                 <FormDescription />
                 <FormMessage />

@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { ChangePasswordSchema } from "@/schemas/user-schemas";
 import { UseFormReturn } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 type ChangePasswordFormProps = {
   form: UseFormReturn<Zod.infer<typeof ChangePasswordSchema>>;
@@ -20,6 +21,7 @@ type ChangePasswordFormProps = {
 };
 
 export default function ChangePasswordUserForm(props: ChangePasswordFormProps) {
+  const { t } = useTranslation();
   return (
     <Form {...props.form}>
       <form onSubmit={props.form.handleSubmit(props.onFormSubmit)}>
@@ -29,11 +31,11 @@ export default function ChangePasswordUserForm(props: ChangePasswordFormProps) {
             name="currentPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Current password</FormLabel>
+                <FormLabel>{t("Current_Password")}</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
-                    placeholder="Enter current password"
+                    placeholder={t("enter_current_password")}
                     {...field}
                   ></Input>
                 </FormControl>
@@ -47,11 +49,11 @@ export default function ChangePasswordUserForm(props: ChangePasswordFormProps) {
             name="newPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>New password</FormLabel>
+                <FormLabel>{t("new_password")}</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
-                    placeholder="Enter new password"
+                    placeholder={t("enter_new_password")}
                     {...field}
                   ></Input>
                 </FormControl>
@@ -65,11 +67,11 @@ export default function ChangePasswordUserForm(props: ChangePasswordFormProps) {
             name="confirmNewPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Confirm new password</FormLabel>
+                <FormLabel>{t("confirm_new_password")}</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
-                    placeholder="Enter password confirmation"
+                    placeholder={t("enter_password_confirmation")}
                     {...field}
                   ></Input>
                 </FormControl>

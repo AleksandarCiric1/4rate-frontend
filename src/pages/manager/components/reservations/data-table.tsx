@@ -44,6 +44,7 @@ import { addDays, format, startOfDay } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import React, { ReactNode } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 interface DataTableProps<TData, TValue> {
@@ -63,6 +64,7 @@ export function DataTable<TData, TValue>({
   children,
   onDateChange,
 }: DataTableProps<TData, TValue>) {
+  const { t } = useTranslation();
   const today = startOfDay(new Date());
   const maxDate = addDays(today, 6);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -221,7 +223,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {t("No results")}
                 </TableCell>
               </TableRow>
             )}

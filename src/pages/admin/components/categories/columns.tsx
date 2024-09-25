@@ -15,6 +15,7 @@ import {
 interface ColumnProps {
   onAction: (id: number, action: string) => void;
   onEdit: (category: Category) => void;
+  t: (key: string) => string;
 }
 
 export type Category = {
@@ -26,20 +27,21 @@ export type Category = {
 export const columns = (props: ColumnProps): ColumnDef<Category>[] => [
   {
     accessorKey: "id",
-    header: "Id",
+    header: props.t("Id"),
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: props.t("Name"),
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: props.t("Status"),
     cell: ({ row }) => {
       const statusValue = row.getValue("status");
-      if (statusValue === true) return <Badge variant="success">active</Badge>;
+      if (statusValue === true)
+        return <Badge variant="success">{props.t("active")}</Badge>;
       else if (statusValue === false)
-        return <Badge variant="destructive">blocked</Badge>;
+        return <Badge variant="destructive">{props.t("active")}</Badge>;
     },
   },
   {
@@ -58,21 +60,21 @@ export const columns = (props: ColumnProps): ColumnDef<Category>[] => [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>{props.t("Actions")}</DropdownMenuLabel>
               {row.getValue("status") === false && (
                 <DropdownMenuItem
                   onClick={() => props.onAction(id, "activate")}
                 >
-                  Activate
+                  {props.t("activate")}
                 </DropdownMenuItem>
               )}
               {row.getValue("status") === true && (
                 <DropdownMenuItem onClick={() => props.onAction(id, "block")}>
-                  Block
+                  {props.t("block")}
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem onClick={() => props.onEdit(row.original)}>
-                Edit
+                {props.t("edit")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

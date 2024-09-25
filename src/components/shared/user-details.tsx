@@ -5,11 +5,13 @@ import { useUser } from "@/providers/user";
 import { User } from "@/types/user";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import defaultAvatar from "../../assets/default_avatar.png";
 import { ChangePasswordDialog } from "../dialogs/change-password-dialog";
 import { EditUserDialog } from "../dialogs/eidt-user-dialog";
 
 const UserProfile = () => {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { user, setUser } = useUser();
   const [userProfile, setUserProfile] = useState<User | null>(null);
@@ -93,7 +95,7 @@ const UserProfile = () => {
       <div className="flex items-center space-x-6">
         <img
           src={avatar !== null ? avatar : defaultAvatar}
-          alt="User Avatar"
+          alt="4Rate"
           className="w-24 h-24 rounded-full border dark:border-gray-600"
         />
         <div>
@@ -104,42 +106,42 @@ const UserProfile = () => {
             @{userProfile?.username}
           </p>
           <Button onClick={handleEdit} className="mt-2">
-            Edit Profile
+            {t("edit_profile")}
           </Button>
         </div>
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-4 border-t border-gray-200 dark:border-gray-600 pt-4">
         <div className="font-medium text-gray-900 dark:text-gray-100">
-          Username:
+          {t("Username")}
         </div>
         <div className="text-gray-700 dark:text-gray-400">
           {userProfile?.username}
         </div>
 
         <div className="font-medium text-gray-900 dark:text-gray-100">
-          First Name:
+          {t("first_name")}
         </div>
         <div className="text-gray-700 dark:text-gray-400">
           {userProfile?.firstName}
         </div>
 
         <div className="font-medium text-gray-900 dark:text-gray-100">
-          Last Name:
+          {t("last_name")}
         </div>
         <div className="text-gray-700 dark:text-gray-400">
           {userProfile?.lastName}
         </div>
 
         <div className="font-medium text-gray-900 dark:text-gray-100">
-          Email:
+          {t("Email")}
         </div>
         <div className="text-gray-700 dark:text-gray-400">
           {userProfile?.email}
         </div>
 
         <div className="font-medium text-gray-900 dark:text-gray-100">
-          Date of Birth:
+          {t("date_of_birth")}
         </div>
         <div className="text-gray-700 dark:text-gray-400">
           {userProfile?.dateOfBirth ? formatDate(userProfile.dateOfBirth) : ""}
@@ -160,7 +162,7 @@ const UserProfile = () => {
         onOpenChange={setIsPassChangingDialogOpen}
       />
       <div className="mt-6">
-        <Button onClick={handleChangePassword}>Change Password</Button>
+        <Button onClick={handleChangePassword}>{t("Change_password")}</Button>
       </div>
     </div>
   );

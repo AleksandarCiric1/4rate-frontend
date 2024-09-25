@@ -5,6 +5,7 @@ import { useUser } from "@/providers/user";
 import { Notification, NotificationType } from "@/types/notification";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 const NotificationBell = () => {
@@ -61,7 +62,7 @@ const NotificationBell = () => {
   };
 
   return (
-    <div>
+    <div className="rounded-full p-2  bg-[hsl(var(--background))]">
       <button onClick={handleNotificationClick} className="notification-bell">
         🛎️
         {newNotifications && (
@@ -75,6 +76,7 @@ const NotificationBell = () => {
 };
 
 const NotificationPage = () => {
+  const { t } = useTranslation();
   const { notifications, emptyNotifications } = useNotificationContext();
   const [notViewedNotifications, setNotViewedNotifications] = useState<
     Notification[] | []
@@ -97,15 +99,17 @@ const NotificationPage = () => {
 
   return (
     <div className="flex flex-col items-center p-4 md:p-8 lg:p-12">
-      <h1 className="text-2xl font-bold mb-4">Your Notifications</h1>
+      <h1 className="text-2xl font-bold mb-4">{t("Your_Notifications")}</h1>
       <div className="w-full max-w-3xl">
         {notViewedNotifications.length > 0 ? (
           <ul className="space-y-4">
             {notViewedNotifications.map((notification, index) => (
-              <Card key={index} className="p-4 shadow-md">
+              <Card key={index} className="p-4 shadow-md dark:text-white">
                 <h2 className="text-lg font-semibold">{notification.title}</h2>
-                <p className="text-gray-700">{notification.message}</p>
-                <p className="text-sm text-gray-500">
+                <p className="text-gray-700 dark:text-white">
+                  {notification.message}
+                </p>
+                <p className="text-sm text-gray-500 dark:text-white">
                   {new Date(notification.createdAt).toLocaleString()}
                 </p>
               </Card>
@@ -113,7 +117,7 @@ const NotificationPage = () => {
           </ul>
         ) : (
           <Card className="p-4 text-center shadow-md">
-            <p>No new notifications</p>
+            <p>{t("No_new_notifications")}</p>
           </Card>
         )}
       </div>

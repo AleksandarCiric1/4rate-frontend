@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/chart";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 interface ReservationData {
@@ -37,6 +38,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function ReservationChartComponent({ restaurantId }: ReservationProps) {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const [chartData, setChartData] = useState<ReservationData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,9 +72,9 @@ export function ReservationChartComponent({ restaurantId }: ReservationProps) {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Reservation Statistics</CardTitle>
+        <CardTitle>{t("Reservation Statistics")}</CardTitle>
         <CardDescription>
-          Number of reservations for the past 4 months
+          {t("Number of reservations for the past 4 months")}
         </CardDescription>
       </CardHeader>
       <CardContent>

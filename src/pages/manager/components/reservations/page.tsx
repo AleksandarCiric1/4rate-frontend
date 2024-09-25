@@ -7,8 +7,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { useTranslation } from "react-i18next";
 
 export default function ReservationsPage() {
+  const { t } = useTranslation();
   const { id: restaurantId } = useParams();
   const [data, setData] = useState<Reservation[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -44,11 +46,11 @@ export default function ReservationsPage() {
         console.log(response);
         const message =
           action === "approve"
-            ? "Successfuly approved reservation!"
-            : "Successfully denied reservation!";
+            ? t("Successfuly approved reservation!")
+            : t("Successfully denied reservation!");
         toast({
           variant: "success",
-          title: "Reservation",
+          title: t("Reservation"),
           description: message,
         });
         setData(
@@ -74,7 +76,7 @@ export default function ReservationsPage() {
         console.error(error);
         toast({
           variant: "destructive",
-          title: "Reservation",
+          title: t("Reservation"),
           description: error.response.data,
         });
       });
@@ -87,9 +89,10 @@ export default function ReservationsPage() {
       date: formattedDate,
     };
     console.log(dateRequest);
+    if (!restaurantId) return;
     axios
       .post(
-        `http://localhost:8080/v1/reservations/getAllRestaurantReservationsByDate/${restaurantId}`,
+        reservationEndpoints.getAllRestaurantReservationsByDate(restaurantId),
         dateRequest
       )
       .then((response) => {
@@ -104,12 +107,13 @@ export default function ReservationsPage() {
   return (
     <div className="m-1 md:m-3 lg:m-10">
       <div className="flex justify-between">
-        <h1 className="font-bold text-2xl">Reservations</h1>
+        <h1 className="font-bold text-2xl">{t("Reservations")}</h1>
       </div>
       <div className="container mx-auto py-6">
         <DataTable
           columns={columns({
             onAction: handleActions,
+            t: t,
           })}
           data={data || []}
           onDateChange={handleDateSelect}

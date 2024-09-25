@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { categoryEndpoints } from "@/environments/api-endpoints";
 import {
   DialogCategoryFormDefaultValues,
   DialogCategoryFormSchema,
@@ -17,10 +18,10 @@ import axios from "axios";
 import { Plus } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { z as zod } from "zod";
 import CategoryForm from "./category-forms";
 import { Category } from "./columns";
-import { categoryEndpoints } from "@/environments/api-endpoints";
 
 type CategoryCreateDialogProps = {
   onCreate: (newCategory: Category) => void;
@@ -36,6 +37,7 @@ type CateogryEditDialogProps = {
 };
 
 const CategoryCreateDialog = (props: CategoryCreateDialogProps) => {
+  const { t } = useTranslation();
   const createCategoryForm = useForm<
     zod.infer<typeof DialogCategoryFormSchema>
   >({
@@ -63,20 +65,20 @@ const CategoryCreateDialog = (props: CategoryCreateDialogProps) => {
         <DialogTrigger asChild>
           <Button variant="outline">
             <Plus />
-            Add category
+            {t("add_category")}
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Create category</DialogTitle>
+            <DialogTitle>{t("create_category")}</DialogTitle>
             <DialogDescription>
-              Create a new category. Click create when you're done.
+              {t("Create a new category. Click create when you're done.")}
             </DialogDescription>
           </DialogHeader>
           <CategoryForm
             form={createCategoryForm}
             onFormSubmit={handleSubmitCreateForm}
-            buttonName="Create"
+            buttonName={t("Create")}
           />
         </DialogContent>
       </Dialog>
@@ -85,6 +87,7 @@ const CategoryCreateDialog = (props: CategoryCreateDialogProps) => {
 };
 
 const CategoryEditDialog = (props: CateogryEditDialogProps) => {
+  const { t } = useTranslation();
   const editCategoryForm = useForm<zod.infer<typeof DialogCategoryFormSchema>>({
     resolver: zodResolver(DialogCategoryFormSchema),
     defaultValues: { name: props.category.name },
@@ -114,15 +117,15 @@ const CategoryEditDialog = (props: CateogryEditDialogProps) => {
     <Dialog open={props.isOpen} onOpenChange={props.onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit category</DialogTitle>
+          <DialogTitle>{t("edit_category")}</DialogTitle>
           <DialogDescription>
-            Edit category. Click edit when you're done.
+            {t("Edit category. Click edit when you're done.")}
           </DialogDescription>
         </DialogHeader>
         <CategoryForm
           form={editCategoryForm}
           onFormSubmit={handleSubmitEditForm}
-          buttonName="Edit"
+          buttonName={t("Edit")}
         />
       </DialogContent>
     </Dialog>

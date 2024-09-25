@@ -5,8 +5,10 @@ import { CategoryCreateDialog, CategoryEditDialog } from "./category-dialogs";
 import { Category, columns } from "./columns";
 import { DataTable } from "./data-table";
 import { categoryEndpoints } from "@/environments/api-endpoints";
+import { useTranslation } from "react-i18next";
 
 export default function CategoriesTable() {
+  const { t } = useTranslation();
   const [isEditDialogOpen, setEditDialogOpen] = useState<boolean>(false);
   const [isCreateDialogOpen, setCreateDialogOpen] = useState<boolean>(false);
   const [categoryToEdit, setCategoryToEdit] = useState<Category | null>(null);
@@ -89,13 +91,14 @@ export default function CategoriesTable() {
   return (
     <div>
       <div className="flex justify-between">
-        <h1 className="font-bold text-2xl">Categories</h1>
+        <h1 className="font-bold text-2xl">{t("Categories")}</h1>
       </div>
       <div className="container mx-auto py-6">
         <DataTable
           columns={columns({
             onAction: handleActions,
             onEdit: handleEditCategory,
+            t: t,
           })}
           data={data}
         >

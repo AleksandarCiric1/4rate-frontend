@@ -7,7 +7,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Toaster } from "@/components/ui/toaster";
 import {
   categoryEndpoints,
   restaurantEndpoints,
@@ -15,33 +14,38 @@ import {
 import { Category, Restaurant } from "@/types/restaurant";
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Outlet, useNavigate } from "react-router-dom";
 import { MainPageLayout } from "../layouts/main-page-layout";
+import DataLoader from "@/components/shared/data-loader";
 
 const MainPage = () => {
   return (
     <MainPageLayout>
       <Outlet />
-      <Toaster />
     </MainPageLayout>
   );
 };
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 6;
 
 const RestaurantsGrid = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     axios
       .get(restaurantEndpoints.getAll())
       .then((response) => {
         setRestaurants(response.data);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -98,13 +102,12 @@ const RestaurantsGrid = () => {
     <main className="mt-1 dark:mt-0 py-12 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
-          Best Restaurants
+          {t("Best_restaurants")}
         </h1>
-
         <div className="mb-6">
           <input
             type="text"
-            placeholder="Search restaurants by name..."
+            placeholder={t("Search restaurants by name...")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
@@ -129,17 +132,29 @@ const RestaurantsGrid = () => {
           ))}
         </div>
 
-        <div className="grid gap-8 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 mx-8">
-          {currentRestaurants.map((restaurant, index) => (
-            <RestaurantCard
-              onClick={handleOnCardClick}
-              key={index}
-              restaurant={restaurant}
-              name={restaurant.name}
-              description={restaurant.description}
-              link=""
-            />
-          ))}
+        <div className="mx-8">
+          {isLoading ? (
+            <div className="flex justify-center items-center min-h-[200px]">
+              <DataLoader size={50} color="#ff4500" />
+            </div>
+          ) : currentRestaurants.length === 0 ? (
+            <div className="text-center min-h-[200px]">
+              <p>{t("No results")}</p>
+            </div>
+          ) : (
+            <div className="grid gap-8 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3">
+              {currentRestaurants.map((restaurant, index) => (
+                <RestaurantCard
+                  onClick={handleOnCardClick}
+                  key={index}
+                  restaurant={restaurant}
+                  name={restaurant.name}
+                  description={restaurant.description}
+                  link=""
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="flex justify-center mt-8">

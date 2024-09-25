@@ -32,6 +32,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import MonthlyReportForm from "../guest/components/monthly-report";
 import { ReservationChartComponent } from "../manager/components/reservations/reservation-chart";
 import Review from "./review";
+import { useTranslation } from "react-i18next";
 
 const REVIEWS_PER_PAGE = 5;
 
@@ -39,6 +40,8 @@ export function RestaurantDetailsPage() {
   const navigate = useNavigate();
   const { user } = useUser();
   const { id: restaurantId } = useParams();
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [averageGrade, setAverageGrade] = useState(0);
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [showReportForm, setShowReportForm] = useState<boolean>(false);
@@ -46,8 +49,10 @@ export function RestaurantDetailsPage() {
   const isRestaurantOpen = (workTime: string) => {
     if (!workTime) return false;
 
-    const [startTime, endTime] = workTime
-      .split(" - ")
+    const normalizedWorkTime = workTime.replace(/\s*-\s*/g, "-");
+
+    const [startTime, endTime] = normalizedWorkTime
+      .split("-")
       .map((time) => parse(time, "HH:mm", new Date()));
 
     const currentTime = new Date();
@@ -69,13 +74,35 @@ export function RestaurantDetailsPage() {
       .get(path)
       .then((response) => {
         setRestaurant(response.data);
+
         setIsOpen(isRestaurantOpen(response.data.workTime));
       })
       .catch((error) => {
         console.log(error);
       });
-    document.title = "4Rate: Restaurant";
   }, []);
+
+  useEffect(() => {
+    calculateReviewsAndAverageGrade();
+  }, [restaurant]);
+
+  const calculateReviewsAndAverageGrade = () => {
+    if (!restaurant) return;
+
+    const reviews = restaurant.reviews || [];
+    const reviewCount = reviews.length;
+    setTotalReviews(reviewCount);
+
+    if (reviewCount === 0) {
+      setAverageGrade(0);
+      return;
+    }
+
+    const averageGrade =
+      restaurant.reviews.reduce((sum, review) => sum + review.grade, 0) /
+      reviewCount;
+    setAverageGrade(averageGrade);
+  };
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -138,8 +165,22 @@ export function RestaurantDetailsPage() {
     ? parseInt(restaurantId, 10)
     : undefined;
 
+  const renderStars = (avg: number) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span key={i} className="text-yellow-500">
+          {i <= avg ? "⭐️" : "☆"}
+        </span>
+      );
+    }
+    return stars;
+  };
+
+  const { t } = useTranslation();
+
   if (!parsedRestaurantId && user?.role !== "manager") {
-    return <p>Error: Invalid restaurant ID</p>;
+    return <p>{t("Error: Invalid restaurant ID")}</p>;
   }
 
   return (
@@ -164,11 +205,11 @@ export function RestaurantDetailsPage() {
               ))
             ) : user?.role === "MANAGER" ? (
               <div className="text-5xl font-bold text-slate-300 flex justify-center items-center w-full h-1/2">
-                Add images
+                {t("Add images")}
               </div>
             ) : (
               <div className="text-5xl font-bold text-slate-300 flex justify-center items-center w-full h-1/2">
-                No images
+                {t("No images")}
               </div>
             )}
           </CarouselContent>
@@ -189,8 +230,24 @@ export function RestaurantDetailsPage() {
               </span>
             )}
           </div>
-          <p className="text-lg mb-2">Rating: ⭐️⭐️⭐️⭐️⭐️ (4.5)</p>
-          <p className="text-lg">Work Time: {restaurant?.workTime}</p>
+          <div>
+            <div className="flex items-center">
+              {totalReviews > 0 ? (
+                <>
+                  <p className="text-lg mb-2 flex items-center">
+                    Rating: {renderStars(averageGrade)}
+                    <span className="ml-3"> ({averageGrade.toFixed(1)})</span>
+                  </p>
+                </>
+              ) : (
+                <p className="text-md">{t("Rating: No ratings yet")}</p>
+              )}
+            </div>
+          </div>
+
+          <p className="text-lg">
+            {t("work_time")}: {restaurant?.workTime}
+          </p>
 
           {user?.role === "manager" &&
             user.manager.restaurantId === restaurant?.id && (
@@ -198,7 +255,8 @@ export function RestaurantDetailsPage() {
                 onClick={handleEditClick}
                 className="mt-4 bg-white text-black hover:bg-slate-300"
               >
-                <FilePenLine className="mr-2" /> <span>Edit Restaurant </span>
+                <FilePenLine className="mr-2" />{" "}
+                <span>{t("Edit Restaurant")} </span>
               </Button>
             )}
         </div>
@@ -207,9 +265,13 @@ export function RestaurantDetailsPage() {
         <div className="w-full lg:w-2/3 p-10 mt-10">
           {user?.role === "manager" && (
             <div>
-              <h2 className="text-3xl font-bold mb-4">Restaurant Management</h2>
+              <h2 className="text-3xl font-bold mb-4">
+                {t("Restaurant Management")}
+              </h2>
               <p className="mb-6">
-                You can see restaurant details and you can manage restaurant
+                {t(
+                  "You can see restaurant details and you can manage restaurant"
+                )}
               </p>
             </div>
           )}
@@ -218,51 +280,53 @@ export function RestaurantDetailsPage() {
             <div>
               <Button onClick={handleAddReview} variant="destructive">
                 <Star className="text-white " />
-                <span className="pl-2 text-[16px]"> Write a review</span>
+                <span className="pl-2 text-[16px]"> {t("Write a review")}</span>
               </Button>
             </div>
           )}
 
           <hr className="my-7" />
 
-          <div className="w-[150px]">
-            <h2 className="text-2xl font-bold pb-8">Menu</h2>
+          <div className="w-[170px]">
+            <h2 className="text-2xl font-bold pb-8">{t("Menu")}</h2>
             <MenuButton
               url="https://www.8milepidetroitstylepizza.com/menu"
-              label="Website Menu"
+              label={t("Website Menu")}
             />
           </div>
 
           <hr className="my-7" />
 
           <h2 className="text-3xl font-bold mb-4">
-            Restaurant Basic Information
+            {t("Restaurant Basic Information")}
           </h2>
           <div className="space-y-4">
             {restaurant?.name && (
               <p>
-                <strong>Name:</strong> {restaurant.name}
+                <strong>{t("Name")}:</strong> {restaurant.name}
               </p>
             )}
             {restaurant?.address && (
               <p>
-                <strong>Address:</strong> {restaurant.address}
+                <strong>{t("Address")}:</strong> {restaurant.address}
               </p>
             )}
             {restaurant?.city && (
               <p>
-                <strong>City:</strong> {restaurant.city}
+                <strong>{t("City")}:</strong> {restaurant.city}
               </p>
             )}
             {restaurant?.country && (
               <p>
-                <strong>Country:</strong> {restaurant.country}
+                <strong>{t("Country")}:</strong> {restaurant.country}
               </p>
             )}
             {restaurant?.restaurantPhones &&
               restaurant.restaurantPhones.length > 0 && (
                 <div className="flex items-start space-x-3 flex-wrap">
-                  <strong className="w-20 text-lg font-medium">Phones:</strong>
+                  <strong className="w-20 text-lg font-medium">
+                    {t("Phones")}:
+                  </strong>
                   <div className="flex flex-col gap-2">
                     {restaurant.restaurantPhones.map((phone, index) => (
                       <div key={index} className="">
@@ -276,7 +340,7 @@ export function RestaurantDetailsPage() {
               restaurant.restaurantCategories.length > 0 && (
                 <div className="flex items-start space-x-3 flex-wrap">
                   <strong className="w-28 text-lg font-medium">
-                    Categories:
+                    {t("Categories")}:
                   </strong>
                   <div className="flex flex-wrap gap-2">
                     {restaurant.restaurantCategories.map((category, index) => (
@@ -296,7 +360,7 @@ export function RestaurantDetailsPage() {
 
           <div className="space-y-8">
             <div className="space-y-7">
-              <h3 className="text-2xl font-bold mb-4">Reviews</h3>
+              <h3 className="text-2xl font-bold mb-4">{t("Reviews")}</h3>
 
               {currentReviews &&
                 currentReviews.map((review, index) => (
@@ -361,20 +425,30 @@ export function RestaurantDetailsPage() {
             <hr className="my-7" />
 
             <div>
-              <h3 className="text-2xl font-bold mb-4">Ratings</h3>
-              <div className="flex space-x-4 items-center">
-                <div className="flex items-center">
-                  <span className="text-4xl font-semibold">4.5</span>
-                  <span className="ml-2 text-lg">/ 5</span>
+              <h3 className="text-2xl font-bold mb-4">{t("Ratings")}</h3>
+              {totalReviews > 0 ? (
+                <div className="flex space-x-4 items-center">
+                  <div className="flex items-center">
+                    <span className="text-4xl font-semibold">
+                      {averageGrade.toFixed(1)}
+                    </span>
+                    <span className="ml-2 text-lg">/ 5</span>
+                  </div>
+                  <p className="text-md">
+                    Based on {totalReviews} {t("reviews")}
+                  </p>
                 </div>
-                <p className="text-md">Based on 120 reviews</p>
-              </div>
+              ) : (
+                <p className="text-md">{t("No ratings yet")}</p>
+              )}
             </div>
 
             <hr className="my-7" />
 
             <div>
-              <div className="text-2xl font-bold mb-4">About</div>
+              <div className="text-2xl font-bold mb-4">
+                {t("About Restaurant")}
+              </div>
               <p>{restaurant?.description}</p>
             </div>
 
@@ -383,7 +457,9 @@ export function RestaurantDetailsPage() {
                 <div>
                   <hr className="my-7" />
                   <div>
-                    <div className="text-2xl font-bold mb-4">Analytics</div>
+                    <div className="text-2xl font-bold mb-4">
+                      {t("Analytics")}
+                    </div>
                     {restaurant && (
                       <ReservationChartComponent
                         restaurantId={restaurant?.id}
@@ -402,17 +478,19 @@ export function RestaurantDetailsPage() {
             {user?.role === "manager" &&
               user.manager.restaurantId === restaurant?.id && (
                 <div>
-                  <h3 className="text-2xl font-bold mb-4">Edit Restaurant</h3>
+                  <h3 className="text-2xl font-bold mb-4">
+                    {t("Edit Restaurant Data")}
+                  </h3>
                   <Button onClick={handleEditClick}>
                     <FilePenLine className="mr-2" />{" "}
-                    <span>Edit Restaurant </span>
+                    <span>{t("Edit Restaurant Data")}</span>
                   </Button>
                   <Button onClick={handleAddImageClick} className="ml-4">
-                    <Camera className="mr-2" /> <span>Add images</span>
+                    <Camera className="mr-2" /> <span>{t("Add Images")}</span>
                   </Button>
                   <Button onClick={handleGetReporteClick} className="ml-4">
                     <ArrowRightFromLine className="mr-2" />{" "}
-                    <span> Get monthly report</span>
+                    <span> {t("Get monthly report")}</span>
                   </Button>
                 </div>
               )}
@@ -420,6 +498,7 @@ export function RestaurantDetailsPage() {
         </div>
 
         {user &&
+          restaurant &&
           user?.role === "guest" &&
           restaurant?.manager.userAccount.status !== "suspended" &&
           parsedRestaurantId && (
@@ -427,6 +506,7 @@ export function RestaurantDetailsPage() {
               <MakeReservationForm
                 restaurantId={parsedRestaurantId}
                 userId={user.id}
+                workTime={restaurant?.workTime}
               />
             </div>
           )}

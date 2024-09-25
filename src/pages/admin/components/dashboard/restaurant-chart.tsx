@@ -16,6 +16,7 @@ import { analyticEndpoints } from "@/environments/api-endpoints";
 import { RestaurantChartData, RestaurantsPerMonth } from "@/types/restaurant";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 const chartConfig = {
@@ -29,6 +30,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function RestaurantChartComponent() {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const [chartData, setChartData] = useState<RestaurantChartData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,9 +65,9 @@ export function RestaurantChartComponent() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Restaurant Creation Statistics</CardTitle>
+        <CardTitle>{t("Restaurant Creation Statistics")}</CardTitle>
         <CardDescription>
-          Showing number of restaurants created over the past year
+          {t("Showing number of restaurants created over the past year")}
         </CardDescription>
       </CardHeader>
       <CardContent>

@@ -14,6 +14,7 @@ import {
 
 interface ColumnProps {
   onBlock: (resturant: Restaurant) => void;
+  t: (key: string) => string;
 }
 
 export type Restaurant = {
@@ -27,28 +28,28 @@ export type Restaurant = {
 export const columns = (props: ColumnProps): ColumnDef<Restaurant>[] => [
   {
     accessorKey: "id",
-    header: "Id",
+    header: props.t("Id"),
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: props.t("Name"),
   },
   {
     accessorKey: "description",
-    header: "Description",
+    header: props.t("description"),
   },
   {
     accessorKey: "workTime",
-    header: "Work time",
+    header: props.t("work_time"),
   },
   {
     accessorKey: "status",
-    header: "status",
+    header: props.t("Status"),
     cell: ({ row }) => {
       const statusValue = row.getValue("status");
       if (statusValue === "active")
-        return <Badge variant="success">active</Badge>;
-      else return <Badge variant="destructive">blocked</Badge>;
+        return <Badge variant="success">{props.t("active")}</Badge>;
+      else return <Badge variant="destructive">{props.t("active")}</Badge>;
     },
   },
   {
@@ -66,10 +67,10 @@ export const columns = (props: ColumnProps): ColumnDef<Restaurant>[] => [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>{props.t("Actions")}</DropdownMenuLabel>
               {row.getValue("status") === "active" && (
                 <DropdownMenuItem onClick={() => props.onBlock(restaurant)}>
-                  Block
+                  {props.t("block")}
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>

@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { AdminCreateSchema } from "@/schemas/user-schemas";
 import { UseFormReturn } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 type AdminCreateFormProps = {
   form: UseFormReturn<Zod.infer<typeof AdminCreateSchema>>;
@@ -20,6 +21,7 @@ type AdminCreateFormProps = {
 };
 
 export default function AdminCreateForm(props: AdminCreateFormProps) {
+  const { t } = useTranslation();
   return (
     <Form {...props.form}>
       <form onSubmit={props.form.handleSubmit(props.onFormSubmit)}>
@@ -29,9 +31,9 @@ export default function AdminCreateForm(props: AdminCreateFormProps) {
             name="username"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel>{t("Username")}</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter username" {...field}></Input>
+                  <Input placeholder={t("enter_username")} {...field}></Input>
                 </FormControl>
                 <FormDescription />
                 <FormMessage />
@@ -43,9 +45,9 @@ export default function AdminCreateForm(props: AdminCreateFormProps) {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t("Email")}</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter email" {...field}></Input>
+                  <Input placeholder={t("enter_email")} {...field}></Input>
                 </FormControl>
                 <FormDescription />
                 <FormMessage />
@@ -57,11 +59,11 @@ export default function AdminCreateForm(props: AdminCreateFormProps) {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>{t("Password")}</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
-                    placeholder="Enter password"
+                    placeholder={t("enter_password")}
                     {...field}
                   ></Input>
                 </FormControl>
@@ -75,11 +77,11 @@ export default function AdminCreateForm(props: AdminCreateFormProps) {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Confrim password</FormLabel>
+                <FormLabel>{t("Confirm Password")}</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
-                    placeholder="Enter password confirmation"
+                    placeholder={t("enter_password_confirmation")}
                     {...field}
                   ></Input>
                 </FormControl>

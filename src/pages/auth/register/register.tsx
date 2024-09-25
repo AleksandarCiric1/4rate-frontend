@@ -18,39 +18,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { userEndpoints } from "@/environments/api-endpoints";
 import {
   RegisterDefaultValues,
   RegisterSchema,
 } from "@/schemas/register-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import AuthLayout from "../components/auth-layout";
 
 export const RegisterForm = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    document.title = "4Rate: Register";
-  }, []);
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: RegisterDefaultValues,
   });
 
-  const { formState } = form;
-
   function onSubmit(values: z.infer<typeof RegisterSchema>) {
     console.log(values);
     setIsLoading(true);
 
     axios
-      .post("http://localhost:8080/v1/userAccounts/createAccount", values)
+      .post(userEndpoints.createAccount(), values)
       .then((response) => {
         console.log(response);
         setTimeout(() => {
@@ -72,10 +69,10 @@ export const RegisterForm = () => {
         sectionLayout="w-full h-full p-5"
       >
         <CardWrapper
-          label="Create an account"
-          title="Register"
+          label={t("Create an account")}
+          title={t("Register")}
           backButtonHref="/login"
-          backButtonLabel="Already have an account? Login here."
+          backButtonLabel={t("Already have an account? Login here.")}
         >
           <Form {...form}>
             <form
@@ -87,19 +84,19 @@ export const RegisterForm = () => {
                 name="role"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Role</FormLabel>
+                    <FormLabel>{t("Role")}</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       value={field.value || undefined}
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a role" />
+                          <SelectValue placeholder={t("select_a_role")} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="manager">Manager</SelectItem>
-                        <SelectItem value="guest">Guest</SelectItem>
+                        <SelectItem value="manager">{t("Manager")}</SelectItem>
+                        <SelectItem value="guest">{t("Guest")}</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormDescription />
@@ -112,9 +109,12 @@ export const RegisterForm = () => {
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>{t("Username")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter username" {...field}></Input>
+                      <Input
+                        placeholder={t("enter_username")}
+                        {...field}
+                      ></Input>
                     </FormControl>
                     <FormDescription />
                     <FormMessage />
@@ -126,9 +126,9 @@ export const RegisterForm = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t("Email")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter email" {...field}></Input>
+                      <Input placeholder={t("enter_email")} {...field}></Input>
                     </FormControl>
                     <FormDescription />
                     <FormMessage />
@@ -140,11 +140,11 @@ export const RegisterForm = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t("Password")} </FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Enter password"
+                        placeholder={t("enter_password")}
                         {...field}
                       ></Input>
                     </FormControl>
@@ -158,11 +158,11 @@ export const RegisterForm = () => {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Confrim password</FormLabel>
+                    <FormLabel>{t("Confirm password")}</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Enter password confirmation"
+                        placeholder={t("enter_password_confirmation")}
                         {...field}
                       ></Input>
                     </FormControl>
@@ -173,7 +173,7 @@ export const RegisterForm = () => {
               />
               <div>
                 <Button type="submit" className="mt-6 w-full ">
-                  Register
+                  {t("Register")}
                 </Button>
               </div>
             </form>

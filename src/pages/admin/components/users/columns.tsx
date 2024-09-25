@@ -12,37 +12,47 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User } from "@/types/user";
+import { useUser } from "@/providers/user";
+import { sudoAdminUsername } from "@/environments/env";
+import { t } from "i18next";
 
 interface ColumnProps {
   onAction: (userAccountId: number, path: string, action: string) => void;
+  t: (key: string) => string;
 }
 
 export const columns = (props: ColumnProps): ColumnDef<User>[] => [
   {
     accessorKey: "id",
-    header: "Id",
+    header: props.t("Id"),
   },
   {
     accessorKey: "username",
-    header: "Username",
+    header: props.t("Username"),
   },
   {
     accessorKey: "firstName",
-    header: "First name",
+    header: props.t("first_name"),
   },
   {
     accessorKey: "lastName",
-    header: "Last name",
+    header: props.t("last_name"),
   },
   {
     accessorKey: "role",
-    header: "Role",
+    header: props.t("Role"),
     cell: ({ row }) => {
       const roleValue = row.getValue("role");
-      if (roleValue === "guest") return <Badge variant="blue">guest</Badge>;
+      if (roleValue === "guest")
+        return <Badge variant="blue">{props.t("guest")}</Badge>;
       else if (roleValue === "manager")
-        return <Badge variant="success">manager</Badge>;
-      else return <Badge variant="warning">administrator</Badge>;
+        return <Badge variant="success">{props.t("manager")}</Badge>;
+      else if (
+        roleValue === "administrator" &&
+        row.getValue("username") === "admin"
+      )
+        return <Badge variant="destructive">{props.t("administrator")}</Badge>;
+      else return <Badge variant="warning">{props.t("administrator")}</Badge>;
     },
   },
   {
@@ -60,7 +70,7 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
   },
   {
     accessorKey: "confirmed",
-    header: "Confirmed",
+    header: props.t("Confirmed"),
     cell: ({ row }) => {
       const confirmedValue = row.getValue("confirmed");
 
@@ -70,11 +80,11 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
   },
   {
     accessorKey: "email",
-    header: "Email",
+    header: props.t("Email"),
   },
   {
     accessorKey: "createdAt",
-    header: "Created at",
+    header: props.t("CreatedAt"),
     cell: ({ row }) => {
       const createdAt = new Date(row.getValue("createdAt"));
       const formattedDate = createdAt.toLocaleDateString("en-GB", {
@@ -89,10 +99,11 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
   {
     id: "actions",
     cell: ({ row }) => {
-      const user = row.original;
-      const userAccountId = user.id;
-
-      return (
+      const { user } = useUser();
+      const currentUser = row.original;
+      const userAccountId = currentUser.id;
+      return currentUser.username !== sudoAdminUsername &&
+        currentUser.id !== user?.id ? (
         <div className="flex justify-cente">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -102,9 +113,9 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>{props.t("Actions")}</DropdownMenuLabel>
               {row.getValue("confirmed") !== true &&
-                user.role !== "administrator" && (
+                currentUser.role !== "administrator" && (
                   <DropdownMenuItem
                     onClick={() =>
                       props.onAction(
@@ -114,7 +125,7 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
                       )
                     }
                   >
-                    Confirm
+                    {props.t("Confrim")}
                   </DropdownMenuItem>
                 )}
               {row.getValue("status") !== "block" && (
@@ -129,7 +140,7 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
                         )
                       }
                     >
-                      Activate
+                      {props.t("activate")}
                     </DropdownMenuItem>
                   )}
 
@@ -143,7 +154,7 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
                         )
                       }
                     >
-                      Suspend
+                      {props.t("suspend")}
                     </DropdownMenuItem>
                   )}
                   {row.getValue("status") !== "block" && (
@@ -152,7 +163,7 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
                         props.onAction(userAccountId, "/admin/block", "block")
                       }
                     >
-                      Block
+                      {props.t("block")}
                     </DropdownMenuItem>
                   )}
                 </>
@@ -160,6 +171,8 @@ export const columns = (props: ColumnProps): ColumnDef<User>[] => [
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+      ) : (
+        <></>
       );
     },
   },

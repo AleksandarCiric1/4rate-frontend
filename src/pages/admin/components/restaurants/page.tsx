@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import { columns, Restaurant } from "./columns";
 import { DataTable } from "./data-table";
 import { RestaurantBlockDialog } from "./restaurant-dialogs";
+import { useTranslation } from "react-i18next";
 
 export default function RestaurantsTable() {
+  const { t } = useTranslation();
   const [isBlockDialogOpen, setBlockDialogOpen] = useState<boolean>(false);
   const [restaurantToBlock, setRestaurantToBlock] = useState<Restaurant | null>(
     null
@@ -65,11 +67,11 @@ export default function RestaurantsTable() {
   return (
     <div>
       <div className="flex justify-between">
-        <h1 className="font-bold text-2xl">Restaurants</h1>
+        <h1 className="font-bold text-2xl">{t("Restaurants")}</h1>
       </div>
       <div className="container mx-auto py-6">
         <DataTable
-          columns={columns({ onBlock: handleColumnsBlock })}
+          columns={columns({ onBlock: handleColumnsBlock, t: t })}
           data={data}
         >
           {restaurantToBlock && (

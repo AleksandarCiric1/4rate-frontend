@@ -6,8 +6,10 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { useTranslation } from "react-i18next";
 
 export default function UserReservationsPage() {
+  const { t } = useTranslation();
   const { user } = useUser();
   const [data, setData] = useState<Reservation[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -42,10 +44,10 @@ export default function UserReservationsPage() {
       .then((response) => {
         console.log(response);
         if (action === "cancel") {
-          const message = "Successfuly canceled reservation!";
+          const message = t("Successfuly canceled reservation!");
           toast({
             variant: "success",
-            title: "Reservation",
+            title: t("Reservation"),
             description: message,
           });
           setData(
@@ -58,7 +60,7 @@ export default function UserReservationsPage() {
         console.error(error);
         toast({
           variant: "destructive",
-          title: "Reservation",
+          title: t("Reservation"),
           description: error.response.data,
         });
       });
@@ -70,12 +72,13 @@ export default function UserReservationsPage() {
   return (
     <div className="m-1 md:m-3 lg:m-10">
       <div className="flex justify-between">
-        <h1 className="font-bold text-2xl">Reservations</h1>
+        <h1 className="font-bold text-2xl">{t("Reservations")}</h1>
       </div>
       <div className="container mx-auto py-6">
         <DataTable
           columns={columns({
             onAction: handleActions,
+            t: t,
           })}
           data={data || []}
         >

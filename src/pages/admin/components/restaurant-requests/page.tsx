@@ -5,8 +5,10 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { useTranslation } from "react-i18next";
 
 export default function RestaurantRequestsTable() {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [data, setData] = useState<RestaurantRequest[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,12 +37,12 @@ export default function RestaurantRequestsTable() {
     const toastMessage =
       action === "approve"
         ? {
-            title: "Request successfully approved!",
-            description: "Restaurant can be used now.",
+            title: t("Request successfully approved!"),
+            description: t("Restaurant can be used now."),
           }
         : {
-            title: "Request successfully denied!",
-            description: "Restaurant can't be used now.",
+            title: t("Request successfully denied!"),
+            description: t("Restaurant can't be used now."),
           };
 
     axios
@@ -69,10 +71,13 @@ export default function RestaurantRequestsTable() {
   return (
     <div>
       <div className="flex justify-between">
-        <h1 className="font-bold text-2xl">Restaurants</h1>
+        <h1 className="font-bold text-2xl">{t("RequestsForRestaurant")}</h1>
       </div>
       <div className="container mx-auto py-6">
-        <DataTable columns={columns({ onAction: handleActions })} data={data}>
+        <DataTable
+          columns={columns({ onAction: handleActions, t: t })}
+          data={data}
+        >
           <></>
         </DataTable>
       </div>

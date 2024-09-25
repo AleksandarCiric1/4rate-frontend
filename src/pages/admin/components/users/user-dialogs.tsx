@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import { z as zod } from "zod";
 import AdminCreateForm from "./user-forms";
 import { adminEndpoints } from "@/environments/api-endpoints";
+import { useTranslation } from "react-i18next";
 
 type AdminCreateDialogProps = {
   onCreate: (user: User) => void;
@@ -27,6 +28,7 @@ type AdminCreateDialogProps = {
 };
 
 const AdminCreateDialog = (props: AdminCreateDialogProps) => {
+  const { t } = useTranslation();
   const createAdminForm = useForm<zod.infer<typeof AdminCreateSchema>>({
     resolver: zodResolver(AdminCreateSchema),
     defaultValues: AdminCreateDefaultValues,
@@ -49,20 +51,20 @@ const AdminCreateDialog = (props: AdminCreateDialogProps) => {
         <DialogTrigger asChild>
           <Button variant="outline">
             <Plus />
-            Create admin
+            {t("Create admin")}
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Create category</DialogTitle>
+            <DialogTitle>{t("Create admin")}</DialogTitle>
             <DialogDescription>
-              Create a new category. Click create when you're done.
+              {t("Create a new admin. Click create when you're done.")}
             </DialogDescription>
           </DialogHeader>
           <AdminCreateForm
             form={createAdminForm}
             onFormSubmit={handleSubmitCreateForm}
-            buttonName="Create"
+            buttonName={t("Create")}
           />
         </DialogContent>
       </Dialog>

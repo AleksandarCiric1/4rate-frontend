@@ -12,24 +12,25 @@ import { MoreHorizontal } from "lucide-react";
 
 interface ColumnProps {
   onAction: (action: string, requestId: number) => void;
+  t: (key: string) => string;
 }
 
 export const columns = (props: ColumnProps): ColumnDef<RestaurantRequest>[] => [
   {
     accessorKey: "id",
-    header: "Id",
+    header: props.t("Id"),
   },
   {
     accessorKey: "name",
-    header: "Name of restaurant",
+    header: props.t("name_of_resturant"),
   },
   {
     accessorKey: "description",
-    header: "Description",
+    header: props.t("description"),
   },
   {
     accessorKey: "workTime",
-    header: "Work time",
+    header: props.t("work_time"),
   },
   {
     id: "actions",

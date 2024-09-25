@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Report } from "@/types/report";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type MonthlyReportFormProps = {
   onSubmit: (report: Report) => void;
 };
 
 const MonthlyReportForm = ({ onSubmit }: MonthlyReportFormProps) => {
+  const { t } = useTranslation("form");
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [year, setYear] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -47,11 +49,13 @@ const MonthlyReportForm = ({ onSubmit }: MonthlyReportFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="mt-6 p-4 border rounded-md">
-      <h4 className="text-xl font-semibold mb-4">Generate Monthly Report</h4>
+      <h4 className="text-xl font-semibold mb-4">
+        {t("Generate Monthly Report")}
+      </h4>
 
       <div className="mb-4">
         <label htmlFor="month" className="block text-lg mb-2">
-          Select Month:
+          {t("Select Month")}:
         </label>
         <select
           id="month"
@@ -59,7 +63,7 @@ const MonthlyReportForm = ({ onSubmit }: MonthlyReportFormProps) => {
           onChange={(e) => setSelectedMonth(e.target.value)}
           className="border rounded-md p-2 w-full dark:text-black"
         >
-          <option value="">--Select Month--</option>
+          <option value="">--{t("Select Month")}--</option>
           {months.map((month) => (
             <option key={month.value} value={month.value}>
               {month.label}
@@ -70,7 +74,7 @@ const MonthlyReportForm = ({ onSubmit }: MonthlyReportFormProps) => {
 
       <div className="mb-4">
         <label htmlFor="year" className="block text-lg mb-2">
-          Enter Year:
+          {t("Enter Year")}:
         </label>
         <input
           type="text"
@@ -89,7 +93,7 @@ const MonthlyReportForm = ({ onSubmit }: MonthlyReportFormProps) => {
         type="submit"
         className="bg-blue-600 text-white px-4 py-2 rounded-md"
       >
-        Generate Report
+        {t("Generate Report")}
       </Button>
     </form>
   );

@@ -16,6 +16,7 @@ import { analyticEndpoints } from "@/environments/api-endpoints";
 import { UsersChartData, UsersPerMonth } from "@/types/user";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 const chartConfig = {
@@ -29,6 +30,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function UserChartComponent() {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const [chartData, setChartData] = useState<UsersChartData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,9 +63,9 @@ export function UserChartComponent() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>User Creation Statistics</CardTitle>
+        <CardTitle>{t("User Creation Statistics")}</CardTitle>
         <CardDescription>
-          Showing number of users created over the past year
+          {t("Showing number of users created over the past year")}
         </CardDescription>
       </CardHeader>
       <CardContent>

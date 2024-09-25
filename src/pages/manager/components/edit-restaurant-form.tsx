@@ -11,9 +11,11 @@ import { Category, Restaurant } from "@/types/restaurant";
 import axios from "axios";
 import { Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
 const EditRestaurantPage = () => {
+  const { t } = useTranslation();
   const navigation = useNavigate();
   const { id } = useParams();
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
@@ -88,25 +90,25 @@ const EditRestaurantPage = () => {
     const errors: { [key: string]: string } = {};
 
     if (!formState.description.trim()) {
-      errors.description = "Description is required.";
+      errors.description = t("Description is required.");
     }
 
     if (!formState.workTime.trim()) {
-      errors.workTime = "Work time is required.";
+      errors.workTime = t("Work time is required.");
     } else if (!workTimeRegex.test(formState.workTime)) {
-      errors.workTime = "Work time must be in the format HH:MM - HH:MM.";
+      errors.workTime = t("Work time must be in the format HH:MM - HH:MM.");
     }
 
     if (!formState.city || !formState.address.trim()) {
-      errors.address = "Address is required.";
+      errors.address = t("Address is required.");
     }
 
     if (!formState.address || !formState.city.trim()) {
-      errors.city = "City is required.";
+      errors.city = t("City is required.");
     }
 
     if (formState.selectedCategories.length === 0) {
-      errors.selectedCategories = "At least one category must be selected.";
+      errors.selectedCategories = t("At least one category must be selected.");
     }
 
     return errors;
@@ -191,17 +193,19 @@ const EditRestaurantPage = () => {
     <div className="w-full max-w-[100%] sm:max-w-[80%] lg:max-w-[60%] mx-auto p-5">
       <form onSubmit={handleSubmit} className="space-y-8">
         <div>
-          <h3 className="text-3xl font-semibold mb-6">Edit Restaurant</h3>
+          <h3 className="text-3xl font-semibold mb-6">
+            {t("Edit Restaurant")}
+          </h3>
 
           <div className="space-y-4">
             <div>
-              <Label className="pl-1">Description</Label>
+              <Label className="pl-1">{t("description")}</Label>
               <Textarea
                 name="description"
                 value={formState.description}
                 onChange={handleChange}
                 className="w-full dark:bg-white dark:text-black mt-1"
-                placeholder="Enter restaurant description"
+                placeholder={t("Enter restaurant description")}
               />
               {errors.description && (
                 <p className="text-red-500 text-sm mt-1">
@@ -210,7 +214,7 @@ const EditRestaurantPage = () => {
               )}
             </div>
             <div>
-              <Label className="pl-1">Work time</Label>
+              <Label className="pl-1">{t("work_time")}</Label>
               <Input
                 name="workTime"
                 value={formState.workTime}
@@ -238,12 +242,12 @@ const EditRestaurantPage = () => {
             </div>
 
             <div>
-              <Label className="pl-1">City</Label>
+              <Label className="pl-1">{t("City")}</Label>
               <Input
                 name="city"
                 value={formState.city}
                 onChange={handleChange}
-                placeholder="Enter city"
+                placeholder={t("Enter city")}
                 className="mt-1"
               />
               {errors.city && (
@@ -252,26 +256,26 @@ const EditRestaurantPage = () => {
             </div>
 
             <div>
-              <Label className="pl-1">Country</Label>
+              <Label className="pl-1">{t("Country")}</Label>
               <Input
                 name="country"
                 value={formState.country}
                 onChange={handleChange}
-                placeholder="Enter country"
+                placeholder={t("Enter country")}
                 className="mt-1"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium mb-2 pl-1">
-                Phone Numbers
+                {t("Phone Numbers")}
               </label>
               {formState.phones.map((phone: string, index: number) => (
                 <div key={index} className="flex space-x-2 mb-2">
                   <Input
                     value={phone}
                     onChange={(e) => handlePhoneChange(index, e.target.value)}
-                    placeholder={`Phone ${index + 1}`}
+                    placeholder={`${t("Phone")} ${index + 1}`}
                   />
                   <Button
                     type="button"
@@ -283,11 +287,11 @@ const EditRestaurantPage = () => {
                 </div>
               ))}
               <Button type="button" onClick={addPhoneField}>
-                <Plus className="mr-2" /> Add Phone
+                <Plus className="mr-2" /> {t("Add Phone")}
               </Button>
             </div>
             <div className="space-y-1">
-              <Label className="pl-1">Categories</Label>
+              <Label className="pl-1">{t("Categories")}</Label>
               {categories && (
                 <MultiSelect
                   className="dark:bg-white dark:font-normal dark:text-black"
@@ -301,7 +305,7 @@ const EditRestaurantPage = () => {
                     }
                   )}
                   onValueChange={handleMultiSelect}
-                  placeholder="Select options"
+                  placeholder={t("Select options")}
                   variant="inverted"
                   maxCount={3}
                 />
@@ -315,7 +319,7 @@ const EditRestaurantPage = () => {
           </div>
         </div>
 
-        <Button type="submit">Save Changes</Button>
+        <Button type="submit">{t("Edit")}</Button>
       </form>
     </div>
   );

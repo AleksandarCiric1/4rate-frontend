@@ -26,6 +26,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React, { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -38,6 +39,7 @@ export function DataTable<TData, TValue>({
   data,
   children,
 }: DataTableProps<TData, TValue>) {
+  const { t } = useTranslation();
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -83,7 +85,7 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center py-4 justify-between">
-        <Input placeholder="Filter restaurants ..." className="max-w-sm" />
+        <Input placeholder={t("filter_restaurants_...")} className="max-w-sm" />
         {children}
       </div>
       <div className="rounded-md border">
@@ -129,7 +131,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {t("No results")}
                 </TableCell>
               </TableRow>
             )}

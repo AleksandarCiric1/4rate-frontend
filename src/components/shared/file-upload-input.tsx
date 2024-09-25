@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import clsx from "clsx";
 import { Trash2, Upload } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface FileUploadInputProps {
   multiple: boolean;
@@ -14,6 +15,7 @@ const FileUploadInput = ({
   accept,
   onChange,
 }: FileUploadInputProps) => {
+  const { t } = useTranslation();
   const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
@@ -47,7 +49,7 @@ const FileUploadInput = ({
       >
         <Upload className=" text-gray-500" />
         <span className="mt-2 text-sm text-gray-600">
-          {multiple ? "Upload files here" : "Upload file here"}
+          {multiple ? t("upload_files_here") : t("upload_file_here")}
         </span>
         <input
           id="file-upload"

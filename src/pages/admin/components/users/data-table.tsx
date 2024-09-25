@@ -1,12 +1,3 @@
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-
 import { Input } from "@/components/ui/input";
 import {
   Pagination,
@@ -25,8 +16,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { User } from "@/types/user";
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { ReactNode, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -39,6 +38,7 @@ export function DataTable<TData, TValue>({
   data,
   children,
 }: DataTableProps<TData, TValue>) {
+  const { t } = useTranslation();
   const [globalFilter, setGlobalFilter] = useState("");
 
   const table = useReactTable({
@@ -51,18 +51,7 @@ export function DataTable<TData, TValue>({
       globalFilter,
     },
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: (row, filterValue) => {
-      const searchValue = filterValue.toLowerCase();
-      const username = (row.original as User).username?.toLowerCase() || "";
-      const firstName = (row.original as User).firstName?.toLowerCase() || "";
-      const lastName = (row.original as User).lastName?.toLowerCase() || "";
-
-      return (
-        username.includes(searchValue) ||
-        firstName.includes(searchValue) ||
-        lastName.includes(searchValue)
-      );
-    },
+    globalFilterFn: "includesString", // Use React Table's built-in string filter
   });
 
   const pageCount = table.getPageCount();
@@ -95,10 +84,10 @@ export function DataTable<TData, TValue>({
     <div>
       <div className="flex items-center py-4 justify-between">
         <Input
-          placeholder="Filter users ..."
+          placeholder={t("Filter users ...")}
           value={globalFilter ?? ""}
           onChange={(event) => setGlobalFilter(event.target.value)}
-          className="max-w-sm"
+          className="max-w-sm "
         />
         {children}
       </div>
@@ -107,18 +96,16 @@ export function DataTable<TData, TValue>({
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -145,7 +132,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {t("No results")}
                 </TableCell>
               </TableRow>
             )}

@@ -1,3 +1,4 @@
+import { userEndpoints } from "@/environments/api-endpoints";
 import { useUser } from "@/providers/user";
 import {
   ChangePasswordDefaultValues,
@@ -6,10 +7,10 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { z as zod } from "zod";
 import ChangePasswordUserForm from "../forms/change-password-form";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { userEndpoints } from "@/environments/api-endpoints";
 
 type ChangePasswordDialogProps = {
   onChange: (value: boolean) => void;
@@ -18,6 +19,7 @@ type ChangePasswordDialogProps = {
 };
 
 const ChangePasswordDialog = (props: ChangePasswordDialogProps) => {
+  const { t } = useTranslation();
   const { user } = useUser();
   const changePasswordForm = useForm<zod.infer<typeof ChangePasswordSchema>>({
     resolver: zodResolver(ChangePasswordSchema),
@@ -49,13 +51,13 @@ const ChangePasswordDialog = (props: ChangePasswordDialogProps) => {
       <DialogContent className="bg-white dark:bg-gray-800 max-h-[90vh]  overflow-y-auto scrollbar-thin">
         <DialogHeader>
           <DialogTitle className="text-gray-900 dark:text-gray-100">
-            Change password
+            {t("Change_password")}
           </DialogTitle>
         </DialogHeader>
         <ChangePasswordUserForm
           form={changePasswordForm}
           onFormSubmit={handleSubmitForm}
-          buttonName="Submit"
+          buttonName={t("submit")}
         />
       </DialogContent>
     </Dialog>

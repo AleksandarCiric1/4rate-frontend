@@ -1,8 +1,8 @@
+import { imageEndpoints } from "@/environments/api-endpoints";
 import { Restaurant } from "@/types/restaurant";
 import { Link } from "react-router-dom";
 import defaultImage from "../../assets/default-restaurant-image.jpg";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { imageEndpoints } from "@/environments/api-endpoints";
 
 interface RestaurantCardProps {
   onClick: (restaurantId: number) => void;

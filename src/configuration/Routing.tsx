@@ -22,7 +22,7 @@ import ManagerDashboard from "@/pages/manager/manager";
 import { RestaurantDetailsPage } from "@/pages/shared/restaurant-details";
 import { NotificationPage } from "@/pages/shared/notification-practice";
 import { createBrowserRouter } from "react-router-dom";
-import AdminRoute from "./admin-route";
+import { AdminRoute, GuestRoute, MainRoute, ManagerRoute } from "./admin-route";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -35,7 +35,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: "",
-            element: <RestaurantsGrid />,
+            element: (
+              <MainRoute>
+                <RestaurantsGrid />
+              </MainRoute>
+            ),
           },
           {
             path: "about",
@@ -55,7 +59,11 @@ const router = createBrowserRouter([
           },
           {
             path: "manager",
-            element: <ManagerDashboard />,
+            element: (
+              <ManagerRoute>
+                <ManagerDashboard />
+              </ManagerRoute>
+            ),
             children: [
               {
                 path: "",
@@ -73,7 +81,11 @@ const router = createBrowserRouter([
           },
           {
             path: "guest",
-            element: <GuestDashboard />,
+            element: (
+              <GuestRoute>
+                <GuestDashboard />
+              </GuestRoute>
+            ),
             children: [
               {
                 path: "reservations",
@@ -88,25 +100,25 @@ const router = createBrowserRouter([
           { path: "profile", element: <UserProfile /> },
         ],
       },
+    ],
+  },
+  {
+    path: "admin",
+    element: (
+      <AdminRoute>
+        <Admin />
+      </AdminRoute>
+    ),
+    children: [
       {
-        path: "admin",
-        element: (
-          <AdminRoute>
-            <Admin />
-          </AdminRoute>
-        ),
-        children: [
-          {
-            path: "",
-            element: <Dashboard />,
-          },
-          { path: "users", element: <UsersTable /> },
-          { path: "categories", element: <CategoriesTable /> },
-          { path: "restaurants", element: <RestaurantsTable /> },
-          { path: "resturant-requests", element: <RestaurantRequestsTable /> },
-          { path: "profile", element: <UserProfile /> },
-        ],
+        path: "",
+        element: <Dashboard />,
       },
+      { path: "users", element: <UsersTable /> },
+      { path: "categories", element: <CategoriesTable /> },
+      { path: "restaurants", element: <RestaurantsTable /> },
+      { path: "resturant-requests", element: <RestaurantRequestsTable /> },
+      { path: "profile", element: <UserProfile /> },
     ],
   },
   {

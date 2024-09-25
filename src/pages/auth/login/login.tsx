@@ -11,25 +11,24 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { userEndpoints } from "@/environments/api-endpoints";
 import { useUser } from "@/providers/user";
 import { LoginDefaultValues, LoginSchema } from "@/schemas/login-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import AuthLayout from "../components/auth-layout";
-import { userEndpoints } from "@/environments/api-endpoints";
+import { useTranslation } from "react-i18next";
+import { toast } from "@/hooks/use-toast";
 
 export const LoginForm = () => {
+  const { t } = useTranslation();
   const { setIsLogged, setUser } = useUser();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    document.title = "4Rate: Login";
-  }, []);
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -52,8 +51,12 @@ export const LoginForm = () => {
           setIsLoading(false);
         }, 1000);
       })
-      .catch((error) => {
-        console.error(error);
+      .catch(() => {
+        toast({
+          variant: "destructive",
+          title: t("Login"),
+          description: t("Could not login!"),
+        });
         setIsLoading(false);
       });
   }
@@ -66,10 +69,10 @@ export const LoginForm = () => {
         sectionLayout="w-full"
       >
         <CardWrapper
-          label="Login to your account"
-          title="Login"
+          label={t("Login to your account")}
+          title={t("Login")}
           backButtonHref="/register"
-          backButtonLabel="Don't have an account? Sign up here."
+          backButtonLabel={t("Don't have an account? Sign up here.")}
         >
           <Form {...form}>
             <form
@@ -81,9 +84,12 @@ export const LoginForm = () => {
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>{t("Username")}</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter username" {...field}></Input>
+                      <Input
+                        placeholder={t("enter_username")}
+                        {...field}
+                      ></Input>
                     </FormControl>
                     <FormDescription />
                     <FormMessage />
@@ -95,11 +101,11 @@ export const LoginForm = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t("Password")}</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Enter password"
+                        placeholder={t("enter_password")}
                         {...field}
                       ></Input>
                     </FormControl>
@@ -110,7 +116,7 @@ export const LoginForm = () => {
               />
 
               <Button type="submit" className="w-full">
-                Login
+                {t("Login")}
               </Button>
             </form>
           </Form>

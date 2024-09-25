@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { DialogFooter } from "@/components/ui/dialog";
 import {
   Form,
@@ -10,17 +11,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { format } from "date-fns";
-import { EditUserSchema } from "@/schemas/user-schemas";
-import { UseFormReturn } from "react-hook-form";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { EditUserSchema } from "@/schemas/user-schemas";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { UseFormReturn } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 type EditUserFormProps = {
   form: UseFormReturn<Zod.infer<typeof EditUserSchema>>;
@@ -29,6 +30,7 @@ type EditUserFormProps = {
 };
 
 export default function EditUserForm(props: EditUserFormProps) {
+  const { t } = useTranslation();
   return (
     <Form {...props.form}>
       <form onSubmit={props.form.handleSubmit(props.onFormSubmit)}>
@@ -38,11 +40,11 @@ export default function EditUserForm(props: EditUserFormProps) {
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>First name</FormLabel>
+                <FormLabel>{t("first_name")}</FormLabel>
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Enter first name"
+                    placeholder={t("enter_first_name")}
                     {...field}
                   ></Input>
                 </FormControl>
@@ -56,11 +58,11 @@ export default function EditUserForm(props: EditUserFormProps) {
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Last name</FormLabel>
+                <FormLabel>{t("last_name")}</FormLabel>
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder="Enter last name"
+                    placeholder={t("enter_last_name")}
                     {...field}
                   ></Input>
                 </FormControl>
@@ -74,7 +76,7 @@ export default function EditUserForm(props: EditUserFormProps) {
             name="dateOfBirth"
             render={({ field }) => (
               <FormItem className="flex flex-col mb-4">
-                <FormLabel>Date of birth</FormLabel>
+                <FormLabel>{t("date_of_birth")}</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -88,7 +90,7 @@ export default function EditUserForm(props: EditUserFormProps) {
                         {field.value ? (
                           format(field.value, "PPP")
                         ) : (
-                          <span>Pick a date</span>
+                          <span>{t("pick_a_date")}</span>
                         )}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>

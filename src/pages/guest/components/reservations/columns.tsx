@@ -16,42 +16,43 @@ import { Reservation } from "@/types/restaurant";
 
 interface ColumnProps {
   onAction: (reservationId: number, path: string, action: string) => void;
+  t: (key: string) => string;
 }
 
 export const columns = (props: ColumnProps): ColumnDef<Reservation>[] => [
   {
     accessorKey: "id",
-    header: "Id",
+    header: props.t("Id"),
   },
   {
     accessorKey: "description",
-    header: "Description",
+    header: props.t("description"),
   },
   {
     accessorKey: "restaurant.name",
-    header: "Restaurant",
+    header: props.t("Restaurant"),
   },
   {
     accessorKey: "date",
-    header: "Date",
+    header: props.t("Date"),
   },
   {
     accessorKey: "time",
-    header: "Time",
+    header: props.t("Time"),
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: props.t("Status"),
     cell: ({ row }) => {
       const statusValue = row.getValue("status");
       if (statusValue === ReservationStatus.APPROVED)
-        return <Badge variant="success">approved</Badge>;
+        return <Badge variant="success">{props.t("approved")}</Badge>;
       else if (statusValue === ReservationStatus.PENDING)
-        return <Badge variant="default">pending</Badge>;
+        return <Badge variant="default">{props.t("pending")}</Badge>;
       else if (statusValue === ReservationStatus.CANCELED)
-        return <Badge variant="warning">canceled</Badge>;
+        return <Badge variant="warning">{props.t("canceled")}</Badge>;
       else if (statusValue === ReservationStatus.DENIED)
-        return <Badge variant="destructive">denied</Badge>;
+        return <Badge variant="destructive">{props.t("denied")}</Badge>;
     },
   },
   {
@@ -69,7 +70,7 @@ export const columns = (props: ColumnProps): ColumnDef<Reservation>[] => [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>{props.t("Actions")}</DropdownMenuLabel>
               {reservation.status === "approved" && (
                 <div>
                   <DropdownMenuItem
@@ -81,7 +82,7 @@ export const columns = (props: ColumnProps): ColumnDef<Reservation>[] => [
                       )
                     }
                   >
-                    Cancel
+                    {props.t("Cancel")}
                   </DropdownMenuItem>
                 </div>
               )}

@@ -1,15 +1,16 @@
+import { imageEndpoints, userEndpoints } from "@/environments/api-endpoints";
 import { EditUserSchema } from "@/schemas/user-schemas";
 import { User } from "@/types/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { z as zod } from "zod";
 import EditUserForm from "../forms/edit-user-form";
 import { FileUploadInput } from "../shared/file-upload-input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Label } from "../ui/label";
-import { imageEndpoints, userEndpoints } from "@/environments/api-endpoints";
 
 type EditUserDialogProps = {
   onEdit: (editedUser: User) => void;
@@ -19,6 +20,7 @@ type EditUserDialogProps = {
 };
 
 const EditUserDialog = (props: EditUserDialogProps) => {
+  const { t } = useTranslation();
   const [files, setFiles] = useState<File[]>([]);
 
   const handleFileUpload = (files: File[]) => {
@@ -81,13 +83,13 @@ const EditUserDialog = (props: EditUserDialogProps) => {
 
   return (
     <Dialog open={props.isOpen} onOpenChange={props.onOpenChange}>
-      <DialogContent className="bg-white dark:bg-gray-800 max-h-[90vh] h-full overflow-y-auto scrollbar-thin">
+      <DialogContent className="bg-white dark:bg-gray-800 max-h-[90vh]  overflow-y-auto scrollbar-thin">
         <DialogHeader>
           <DialogTitle className="text-gray-900 dark:text-gray-100">
-            Edit Profile
+            {t("edit_profile")}
           </DialogTitle>
         </DialogHeader>
-        <Label>Avatar</Label>
+        <Label>{t("Avatar")}</Label>
         <FileUploadInput
           multiple={false}
           accept="image/*"
@@ -96,7 +98,7 @@ const EditUserDialog = (props: EditUserDialogProps) => {
         <EditUserForm
           form={createEditUserForm}
           onFormSubmit={handleSubmitCreateForm}
-          buttonName="Edit"
+          buttonName={t("Edit")}
         />
       </DialogContent>
     </Dialog>

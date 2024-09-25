@@ -1,6 +1,13 @@
-import { addDays, format, startOfDay } from "date-fns";
+import {
+  addDays,
+  addHours,
+  format,
+  isBefore,
+  isEqual,
+  parse,
+  startOfDay,
+} from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -25,104 +32,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { reservationEndpoints } from "@/environments/api-endpoints";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
-import { reservationEndpoints } from "@/environments/api-endpoints";
-
-const DatePickerDemo = () => {
-  const [date, setDate] = React.useState<Date>();
-
-  const today = startOfDay(new Date());
-  const maxDate = addDays(today, 6);
-
-  const handleTimeSloteChange = (value: string) => {
-    console.log(value);
-  };
-
-  return (
-    <>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant={"outline"}
-            className={cn(
-              "w-[280px] justify-start text-left font-normal",
-              !date && "text-muted-foreground"
-            )}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? format(date, "PPP") : <span>Pick a date</span>}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            initialFocus
-            disabled={(day) => day < today || day > maxDate}
-          />
-        </PopoverContent>
-      </Popover>
-      <TimeSlotSelect
-        workingHours={{ open: "12:00", close: "18:00" }}
-        onChange={handleTimeSloteChange}
-      />
-    </>
-  );
-};
-
-interface TimeSlotSelectProps {
-  workingHours: { open: string; close: string };
-
-  onChange: (value: string) => void;
-}
-
-const generateTimeSlots = (openTime: string, closeTime: string) => {
-  const slots = [];
-  let [openHour, openMinute] = openTime.split(":").map(Number);
-  let [closeHour, closeMinute] = closeTime.split(":").map(Number);
-
-  closeHour = closeHour - 2;
-
-  while (openHour <= closeHour) {
-    slots.push(
-      `${openHour.toString().padStart(2, "0")}:${openMinute
-        .toString()
-        .padStart(2, "0")}`
-    );
-
-    openHour++;
-  }
-
-  return slots;
-};
-
-const TimeSlotSelect = ({ workingHours, onChange }: TimeSlotSelectProps) => {
-  const slots = generateTimeSlots(workingHours.open, workingHours.close);
-
-  return (
-    <div>
-      <label className="block text-sm font-medium">Select Time Slot</label>
-      <Select onValueChange={onChange}>
-        <SelectTrigger className="block w-full border rounded-md">
-          <span>{"Select a time slot"}</span>
-        </SelectTrigger>
-        <SelectContent className="w-full mt-1 border rounded-md">
-          {slots.map((slot) => (
-            <SelectItem key={slot} value={slot}>
-              {slot}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-  );
-};
 
 const FormSchema = z.object({
   date: z.date({ required_error: "Please select date" }),
@@ -132,17 +49,18 @@ const FormSchema = z.object({
   guests: z.string({ required_error: "Please select number of guests" }),
 });
 
-const slots = generateTimeSlots("12:00", "19:00");
-
 type MakeReservationFormProps = {
   userId: number;
   restaurantId: number;
+  workTime: string;
 };
 
 export function MakeReservationForm({
   userId,
   restaurantId,
+  workTime,
 }: MakeReservationFormProps) {
+  const { t } = useTranslation();
   const today = startOfDay(new Date());
   const maxDate = addDays(today, 6);
 
@@ -154,6 +72,39 @@ export function MakeReservationForm({
       guests: "",
     },
   });
+
+  const generateTimeSlots = (workTime: string) => {
+    if (!workTime) return [];
+
+    const normalizedWorkTime = workTime.replace(/\s*-\s*/g, "-");
+    const [startTimeString, endTimeString] = normalizedWorkTime.split("-");
+
+    const startTime = parse(startTimeString, "HH:mm", new Date());
+    const endTime = parse(endTimeString, "HH:mm", new Date());
+
+    const adjustedEndTime = addHours(endTime, -2);
+
+    const timeSlots = [];
+    let currentTime = startTime;
+
+    while (
+      isBefore(currentTime, adjustedEndTime) ||
+      isEqual(currentTime, adjustedEndTime)
+    ) {
+      timeSlots.push(
+        currentTime.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        })
+      );
+      currentTime = addHours(currentTime, 1);
+    }
+
+    return timeSlots;
+  };
+
+  const availableTimeSlots = generateTimeSlots(workTime);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     data.timeSlot = `${data.timeSlot}:00`;
@@ -168,18 +119,18 @@ export function MakeReservationForm({
 
     axios
       .post(reservationEndpoints.makeReservation(), obj)
-      .then((response) => {
+      .then(() => {
         toast({
           variant: "success",
-          title: "Making reservation",
-          description: "Successfuly created reservation",
+          title: t("Making reservation"),
+          description: t("Successfuly created reservation"),
         });
       })
       .catch((error) => {
         toast({
           variant: "destructive",
-          title: "Making reservation",
-          description: "Reservation could not be created!",
+          title: t("Making reservation"),
+          description: t("Reservation could not be created!"),
         });
         console.log(error);
       });
@@ -190,7 +141,7 @@ export function MakeReservationForm({
   return (
     <div className="w-full border border-gray-300 dark:border-gray-700 p-6 rounded-md">
       <div className="mb-4 text-slate-900 font-medium text-2xl dark:text-white">
-        Make reservation
+        {t("Make reservation")}
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -199,7 +150,7 @@ export function MakeReservationForm({
             name="date"
             render={({ field }) => (
               <FormItem className="flex flex-col w-full">
-                <FormLabel>Date</FormLabel>
+                <FormLabel>{t("Date")}</FormLabel>
 
                 <Popover>
                   <PopoverTrigger asChild>
@@ -214,7 +165,7 @@ export function MakeReservationForm({
                       {field.value ? (
                         format(field.value, "PPP")
                       ) : (
-                        <span>Pick a date</span>
+                        <span>{t("Pick a date")}</span>
                       )}
                     </Button>
                   </PopoverTrigger>
@@ -227,6 +178,7 @@ export function MakeReservationForm({
                       }}
                       initialFocus
                       disabled={(day) => day < today || day > maxDate}
+                      showOutsideDays={true}
                     />
                   </PopoverContent>
                 </Popover>
@@ -241,15 +193,15 @@ export function MakeReservationForm({
             name="timeSlot"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Time slot</FormLabel>
+                <FormLabel>{t("Time")}</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select time slot" />
+                      <SelectValue placeholder={t("Select time")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="w-full">
-                    {slots.map((slot, index) => (
+                    {availableTimeSlots.map((slot, index) => (
                       <SelectItem key={index} value={slot}>
                         {slot}
                       </SelectItem>
@@ -266,11 +218,11 @@ export function MakeReservationForm({
             name="guests"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Number of guests</FormLabel>
+                <FormLabel>{t("Number of guests")}</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select number of guests" />
+                      <SelectValue placeholder={t("Select number of guests")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="w-full">
@@ -287,7 +239,7 @@ export function MakeReservationForm({
             )}
           />
           <Button type="submit" className="w-full">
-            Submit
+            {t("Create")}
           </Button>
         </form>
       </Form>
@@ -295,4 +247,4 @@ export function MakeReservationForm({
   );
 }
 
-export { DatePickerDemo, TimeSlotSelect };
+// export { DatePickerDemo };

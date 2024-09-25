@@ -6,8 +6,11 @@ import { User } from "@/types/user";
 import { AdminCreateDialog } from "./user-dialogs";
 import { adminEndpoints } from "@/environments/api-endpoints";
 import { BASE_URL } from "@/environments/env";
+import { toast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 export default function UsersTable() {
+  const { t } = useTranslation();
   const [isCreateAdminDialogOpen, setCreateAdminDialogOpen] =
     useState<boolean>(false);
   const [data, setData] = useState<User[] | null>(null);
@@ -58,6 +61,11 @@ export default function UsersTable() {
       })
       .catch((error) => {
         console.error(error);
+        toast({
+          variant: "destructive",
+          title: "Actions",
+          description: "Could not apply action!",
+        });
       });
   };
 
@@ -71,11 +79,12 @@ export default function UsersTable() {
 
   return (
     <div>
-      <h1 className="font-bold text-2xl">Users</h1>
+      <h1 className="font-bold text-2xl">{t("Users")}</h1>
       <div className="container mx-auto py-10">
         <DataTable
           columns={columns({
             onAction: handleActions,
+            t: t,
           })}
           data={data}
         >

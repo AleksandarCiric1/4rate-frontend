@@ -5,9 +5,11 @@ import { useUser } from "@/providers/user";
 import axios from "axios";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 
 const AddReview: React.FC = () => {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { id: restaurantId } = useParams();
   const { user } = useUser();
@@ -32,11 +34,13 @@ const AddReview: React.FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     if (rating === 0) {
-      setError("Please select a star rating.");
+      setError(t("Please select a star rating."));
       return;
     }
     if (reviewText.trim().length < 50) {
-      setError("Please write a more detailed review (at least 50 characters).");
+      setError(
+        t("Please write a more detailed review (at least 50 characters).")
+      );
       return;
     }
 
@@ -67,11 +71,11 @@ const AddReview: React.FC = () => {
 
   return (
     <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Write a Review</h1>
+      <h1 className="text-3xl font-bold mb-6">{t("Write a Review")}</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label className="block text-lg font-semibold mb-2">
-            Your Rating
+            {t("Your Rating")}
           </label>
           <div className="flex gap-3">
             <div className="flex items-center space-x-1">
@@ -101,12 +105,12 @@ const AddReview: React.FC = () => {
 
         <div>
           <label className="block text-lg font-semibold mb-2">
-            Your Comment
+            {t("Your Comment")}
           </label>
           <textarea
             value={reviewText}
             onChange={(e) => setReviewText(e.target.value)}
-            placeholder="Write your review here..."
+            placeholder={t("Write your review here...")}
             className="w-full border p-2 rounded-md focus:ring-2 focus:ring-blue-500 dark:text-black"
             rows={6}
           ></textarea>
@@ -118,7 +122,7 @@ const AddReview: React.FC = () => {
           type="submit"
           className="bg-slate-600 text-white px-4 py-2 rounded-md hover:bg-slate-700 dark:hover:bg-slate-500"
         >
-          Post Review
+          {t("Post Review")}
         </Button>
       </form>
     </div>
